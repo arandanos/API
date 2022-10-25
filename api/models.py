@@ -9,6 +9,19 @@ class AccesibleElement(models.Model):
     _id = models.AutoField(primary_key = True)
     _text = models.TextField()
     _pictogram = models.TextField()
+    
+    class Meta:
+        _id = ['_id']
+        _text = ['_text']
+        _pictogram = ['_pictogram']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_text" : self._text,
+            "_pictogram" : self._pictogram
+        }
+        return json_str
 
 class DishType(models.Model):
     _id = models.CharField(primary_key = True, max_length = 20)

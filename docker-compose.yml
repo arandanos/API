@@ -23,6 +23,5 @@ services:
       - POSTGRES_NAME=appRendo
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
-    restart: always
     depends_on:
       - db
