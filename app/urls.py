@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import AccesibleElementView
+from api.views import AccesibleElementView, AccesibleElementViewID
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path ('api/accesible_element', AccesibleElementView),
+    path ('api/accesible_element/<_id>', AccesibleElementViewID),
 ]
