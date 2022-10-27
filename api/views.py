@@ -22,7 +22,10 @@ def AccesibleElementView(request):
         
         already_in_db = AccesibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
                 
-        if not(already_in_db) and serializer.is_valid():
+        if already_in_db:
+            serializer = AccesibleElementSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status = 201)
         
@@ -53,15 +56,20 @@ def AccesibleElementViewID(request, _id):
             
         if not('_pictogram' in data):
             data['_pictogram'] = item_serializer.data['_pictogram']
-            
-        already_in_db = AccesibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
-        serializer = AccesibleElementSerializer(item, data = data)
- 
-        if serializer.is_valid() and not(already_in_db):
-            serializer.save()
-            return JsonResponse(serializer.data)
         
-        return HttpResponse(status = 204)
+        # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
+        already_in_db = AccesibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
+ 
+        if already_in_db:
+            serializer = AccesibleElementSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = AccesibleElementSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
 
     # Se elimina la entrada de la tabla con igual ID
     elif request.method == 'DELETE':
