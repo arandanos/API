@@ -1,0 +1,19 @@
+# * http://localhost:8000/api/dish_type
+
+GET http://localhost:8000/api/dish_type
+
+###
+
+POST http://localhost:8000/api/dish_type
+
+{
+    "_id": "menu"
+}
+
+###
+
+GET http://localhost:8000/api/dish_type/postre
+
+###
+
+DELETE http://localhost:8000/api/dish_type/postre

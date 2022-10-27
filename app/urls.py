@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import AccesibleElementView, AccesibleElementViewID
+from api.views import AccesibleElementView, AccesibleElementViewID, DishTypeView, DishTypeViewID
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path ('api/accesible_element', AccesibleElementView),
-    path ('api/accesible_element/<_id>', AccesibleElementViewID),
+    path('api/accesible_element', AccesibleElementView),
+    path('api/accesible_element/<_id>', AccesibleElementViewID),
+    path('api/dish_type', DishTypeView),
+    path('api/dish_type/<_id>', DishTypeViewID)
 ]

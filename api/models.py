@@ -25,6 +25,15 @@ class AccesibleElement(models.Model):
 
 class DishType(models.Model):
     _id = models.CharField(primary_key = True, max_length = 20)
+    
+    class Meta:
+        _id = ['_id']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id
+        }
+        return json_str
 
 class Dish(models.Model):
     _id = models.AutoField(primary_key = True)
