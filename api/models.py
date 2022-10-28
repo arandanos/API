@@ -56,6 +56,17 @@ class Dish(models.Model):
 class Classroom(models.Model):
     _id = models.AutoField(primary_key = True)
     _class_code = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+    
+    class Meta:
+        _id = ['_id']
+        _type = ['_class_code']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_class_code" : self._class_code
+        }
+        return json_str
 
 class Task(models.Model):
     _id = models.AutoField(primary_key = True)

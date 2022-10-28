@@ -2,8 +2,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccesibleElement, DishType, Dish
-from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer
+from .models import AccesibleElement, DishType, Dish, Classroom
+from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer
 
 # Create your views here.
 # *****************************
@@ -174,7 +174,6 @@ def DishViewID(request, _id):
         if not('_type' in data):
             data['_type'] = item_serializer.data['_type']
         
-        # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
         already_in_db = Dish.objects.filter(_name = data['_name'], _type = data['_type'])
  
         if already_in_db:
@@ -182,6 +181,70 @@ def DishViewID(request, _id):
             return JsonResponse(serializer.data, safe = False)
         else:
             serializer = DishSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+    
+# *****************************
+# *         CLASSROOM         *
+# *****************************
+
+@csrf_exempt
+def ClassroomView(request):
+    if request.method == 'GET':
+        classrooms = Classroom.objects.all()
+        serializer = ClassroomSerializer(classrooms, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ClassroomSerializer(data = data)
+        
+        already_in_db = Classroom.objects.filter(_class_code = data['_class_code'])
+                
+        if already_in_db:
+            serializer = ClassroomSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+
+@csrf_exempt
+def ClassroomViewID(request, _id):
+
+    try: 
+        item = Classroom.objects.get(_id = _id)
+
+    except Classroom.DoesNotExist:
+        raise Http404('Not found')
+        return True
+
+    if request.method == 'GET':
+        serializer = ClassroomSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = ClassroomSerializer(item)
+        
+        if not('_class_code' in data):
+            data['_class_code'] = item_serializer.data['_class_code']
+        
+        already_in_db = Classroom.objects.filter(_class_code = data['_class_code'])
+ 
+        if already_in_db:
+            serializer = ClassroomSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = ClassroomSerializer(item, data = data)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data)
