@@ -59,7 +59,7 @@ class Classroom(models.Model):
     
     class Meta:
         _id = ['_id']
-        _type = ['_class_code']
+        _class_code = ['_class_code']
  
     def __str__(self):
         json_str = {
@@ -73,6 +73,21 @@ class Task(models.Model):
     _name = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
     _due_date = models.DateField()
     _feedback = models.TextField()
+    
+    class Meta:
+        _id = ['_id']
+        _name = ['_name']
+        _due_date = ['_due_date']
+        _feedback = ['_feedback']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_name" : self._name,
+            "_due_date" : self._due_date,
+            "_feedback" : self._feedback
+        }
+        return json_str
 
 class KitchenOrder(models.Model):
     _id = models.ForeignKey("Task", on_delete = models.CASCADE)

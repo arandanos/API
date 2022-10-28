@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AccesibleElement, DishType, Dish, Classroom
+from .models import AccesibleElement, DishType, Dish, Classroom, Task
  
 class AccesibleElementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +20,8 @@ class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
         fields = ['_id', '_class_code']
+        
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['_id', '_name', '_due_date', '_feedback']

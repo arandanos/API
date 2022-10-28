@@ -1,0 +1,32 @@
+# * http://localhost:8000/api/task
+
+GET http://localhost:8000/api/task
+
+###
+
+POST http://localhost:8000/api/task
+
+{
+    "_name" : "15",
+    "_due_date": "2015-03-22",
+    "_feedback": "2015-03-22"
+}
+
+### * http://localhost:8000/api/task/<_id>
+
+GET http://localhost:8000/api/task/1
+
+###
+
+PUT http://localhost:8000/api/task/1
+
+{
+    "_name" : "16",
+    "_due_date": "2015-03-25",
+    "_feedback": "2015-03-25"
+}
+
+
+###
+
+DELETE http://localhost:8000/api/task/1

@@ -2,8 +2,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccesibleElement, DishType, Dish, Classroom
-from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer
+from .models import AccesibleElement, DishType, Dish, Classroom, Task
+from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, TaskSerializer
 
 # Create your views here.
 # *****************************
@@ -245,6 +245,76 @@ def ClassroomViewID(request, _id):
             return JsonResponse(serializer.data, safe = False)
         else:
             serializer = ClassroomSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+    
+# ****************************
+# *           TASK           *
+# ****************************
+
+@csrf_exempt
+def TaskView(request):
+    if request.method == 'GET':
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = TaskSerializer(data = data)
+        
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+                
+        if already_in_db:
+            serializer = TaskSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+    
+@csrf_exempt
+def TaskViewID(request, _id):
+
+    try: 
+        item = Task.objects.get(_id = _id)
+
+    except Task.DoesNotExist:
+        raise Http404('Not found')
+        return True
+
+    if request.method == 'GET':
+        serializer = TaskSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = TaskSerializer(item)
+        
+        if not('_name' in data):
+            data['_name'] = item_serializer.data['_name']
+            
+        if not('_due_date' in data):
+            data['_due_date'] = item_serializer.data['_due_date']
+            
+        if not('_feedback' in data):
+            data['_feedback'] = item_serializer.data['_feedback']
+        
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+ 
+        if already_in_db:
+            serializer = TaskSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = TaskSerializer(item, data = data)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data)
