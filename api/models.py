@@ -91,6 +91,15 @@ class Task(models.Model):
 
 class KitchenOrder(models.Model):
     _id = models.ForeignKey("Task", on_delete = models.CASCADE)
+    
+    class Meta:
+        _id = ['_id']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id
+        }
+        return json_str
 
 class KitchenOrderDetail(models.Model):
     _id = models.AutoField(primary_key = True)

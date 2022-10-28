@@ -1,0 +1,19 @@
+# * http://localhost:8000/api/kitchen_order
+
+GET http://localhost:8000/api/kitchen_order
+
+###
+
+POST http://localhost:8000/api/kitchen_order
+
+{
+    "_id" : "1"
+}
+
+### * http://localhost:8000/api/kitchen_order/<_id>
+
+GET http://localhost:8000/api/kitchen_order/1
+
+###
+
+DELETE http://localhost:8000/api/kitchen_order/1

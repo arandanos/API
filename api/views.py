@@ -2,8 +2,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccesibleElement, DishType, Dish, Classroom, Task
-from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, TaskSerializer
+from .models import AccesibleElement, DishType, Dish, Classroom, Task, KitchenOrder
+from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, TaskSerializer, KitchenOrderSerializer
 
 # Create your views here.
 # *****************************
@@ -320,6 +320,49 @@ def TaskViewID(request, _id):
                 return JsonResponse(serializer.data)
         
         return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+    
+# ***************************
+# *      KITCHEN ORDER      *
+# ***************************
+
+@csrf_exempt
+def KitchenOrderView(request):
+    
+    if request.method == 'GET':
+        kitchen_orders = KitchenOrder.objects.all()
+        serializer = KitchenOrderSerializer(kitchen_orders, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = KitchenOrderSerializer(data = data)
+        
+        already_in_db = KitchenOrder.objects.filter(_id = data['_id'])
+                
+        if already_in_db:
+            serializer = KitchenOrderSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+    
+@csrf_exempt
+def KitchenOrderViewID(request, _id):
+
+    try: 
+        item = KitchenOrder.objects.get(_id = _id)
+    except AccesibleElement.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = KitchenOrderSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
