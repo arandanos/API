@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AccesibleElement, DishType
+from .models import AccesibleElement, DishType, Dish
  
 class AccesibleElementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,3 +10,8 @@ class DishTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DishType
         fields = ['_id']
+        
+class DishSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dish
+        fields = ['_id', '_name', '_type']

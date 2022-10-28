@@ -1,0 +1,29 @@
+# * http://localhost:8000/api/dish
+
+GET http://localhost:8000/api/dish
+
+###
+
+POST http://localhost:8000/api/dish
+
+{
+    "_name" : "15",
+    "_type": "POSTRE"
+}
+
+### * http://localhost:8000/api/dish/<_id>
+
+GET http://localhost:8000/api/dish/1
+
+###
+
+PUT http://localhost:8000/api/dish/1
+
+{
+    "_name" : "16"
+}
+
+
+###
+
+DELETE http://localhost:8000/api/dish/1

@@ -39,6 +39,19 @@ class Dish(models.Model):
     _id = models.AutoField(primary_key = True)
     _name = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
     _type = models.ForeignKey("DishType", on_delete = models.CASCADE)
+    
+    class Meta:
+        _id = ['_id']
+        _name = ['_name']
+        _type = ['_type']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_name" : self._name,
+            "_type" : self._type
+        }
+        return json_str
 
 class Classroom(models.Model):
     _id = models.AutoField(primary_key = True)

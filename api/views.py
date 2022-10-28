@@ -2,8 +2,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccesibleElement, DishType
-from .serializers import AccesibleElementSerializer, DishTypeSerializer
+from .models import AccesibleElement, DishType, Dish
+from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer
 
 # Create your views here.
 # *****************************
@@ -123,3 +123,71 @@ def DishTypeViewID(request, _id):
         
     
     return HttpResponse(status = 400)
+
+# ******************************
+# *            DISH            *
+# ******************************
+
+@csrf_exempt
+def DishView(request):
+    if request.method == 'GET':
+        dishes = Dish.objects.all()
+        serializer = DishSerializer(dishes, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = DishSerializer(data = data)
+        
+        already_in_db = Dish.objects.filter(_name = data['_name'], _type = data['_type'])
+                
+        if already_in_db:
+            serializer = DishSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+    
+@csrf_exempt
+def DishViewID(request, _id):
+
+    try: 
+        item = Dish.objects.get(_id = _id)
+
+    except Dish.DoesNotExist:
+        raise Http404('Not found')
+        return True
+
+    if request.method == 'GET':
+        serializer = DishSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = DishSerializer(item)
+        
+        if not('_name' in data):
+            data['_name'] = item_serializer.data['_name']
+            
+        if not('_type' in data):
+            data['_type'] = item_serializer.data['_type']
+        
+        # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
+        already_in_db = Dish.objects.filter(_name = data['_name'], _type = data['_type'])
+ 
+        if already_in_db:
+            serializer = DishSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = DishSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
