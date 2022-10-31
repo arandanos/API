@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import AccesibleElementView, AccesibleElementViewID, DishTypeView, DishTypeViewID, DishView, DishViewID, ClassroomView, ClassroomViewID, TaskView, TaskViewID, KitchenOrderView, KitchenOrderViewID
+from api.views import AccesibleElementView, AccesibleElementViewID, DishTypeView, DishTypeViewID, DishView, DishViewID, ClassroomView, ClassroomViewID, FeedbackView, TaskView, TaskViewID, KitchenOrderView, KitchenOrderViewID, KitchenOrderDetailView, KitchenOrderDetailViewID
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,8 +27,11 @@ urlpatterns = [
     path('api/dish/<_id>', DishViewID),
     path('api/classroom', ClassroomView),
     path('api/classroom/<_id>', ClassroomViewID),
+    path('api/feedback', FeedbackView),
     path('api/task', TaskView),
     path('api/task/<_id>', TaskViewID),
     path('api/kitchen_order', KitchenOrderView),
-    path('api/kitchen_order/<_id>', KitchenOrderViewID)
+    path('api/kitchen_order/<_id>', KitchenOrderViewID),
+    path('api/kitchen_order_detail', KitchenOrderDetailView),
+    path('api/kitchen_order_detail/<_id>', KitchenOrderDetailViewID)
 ]

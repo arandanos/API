@@ -7,9 +7,9 @@ GET http://localhost:8000/api/task
 POST http://localhost:8000/api/task
 
 {
-    "_name" : "15",
+    "_name" : "1",
     "_due_date": "2015-03-22",
-    "_feedback": "2015-03-22"
+    "_feedback": "1"
 }
 
 ### * http://localhost:8000/api/task/<_id>
@@ -22,8 +22,7 @@ PUT http://localhost:8000/api/task/1
 
 {
     "_name" : "16",
-    "_due_date": "2015-03-25",
-    "_feedback": "2015-03-25"
+    "_due_date": "2015-03-25"
 }
 
 

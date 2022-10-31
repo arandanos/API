@@ -2,8 +2,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccesibleElement, DishType, Dish, Classroom, Task, KitchenOrder
-from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, TaskSerializer, KitchenOrderSerializer
+from .models import AccesibleElement, DishType, Dish, Classroom, Feedback, KitchenOrderDetail, Task, KitchenOrder
+from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, FeedbackSerializer, TaskSerializer, KitchenOrderSerializer, KitchenOrderDetailSerializer
 
 # Create your views here.
 # *****************************
@@ -158,7 +158,6 @@ def DishViewID(request, _id):
 
     except Dish.DoesNotExist:
         raise Http404('Not found')
-        return True
 
     if request.method == 'GET':
         serializer = DishSerializer(item)
@@ -225,7 +224,6 @@ def ClassroomViewID(request, _id):
 
     except Classroom.DoesNotExist:
         raise Http404('Not found')
-        return True
 
     if request.method == 'GET':
         serializer = ClassroomSerializer(item)
@@ -254,6 +252,32 @@ def ClassroomViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+# ****************************
+# *         FEEDBACK         *
+# ****************************
+
+@csrf_exempt
+def FeedbackView(request):
+    if request.method == 'GET':
+        feedbacks = Feedback.objects.all()
+        serializer = FeedbackSerializer(feedbacks, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = FeedbackSerializer(data = data)
+        
+        already_in_db = Feedback.objects.filter(_feedback = data['_feedback'])
+                
+        if already_in_db:
+            serializer = FeedbackSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
     
 # ****************************
 # *           TASK           *
@@ -289,7 +313,6 @@ def TaskViewID(request, _id):
 
     except Task.DoesNotExist:
         raise Http404('Not found')
-        return True
 
     if request.method == 'GET':
         serializer = TaskSerializer(item)
@@ -367,3 +390,77 @@ def KitchenOrderViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+# ********************************
+# *     KITCHEN ORDER DETAIL     *
+# ********************************
+
+@csrf_exempt
+def KitchenOrderDetailView(request):
+    
+    if request.method == 'GET':
+        kitchen_orders_deatils = KitchenOrderDetail.objects.all()
+        serializer = KitchenOrderDetailSerializer(kitchen_orders_deatils, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = KitchenOrderDetailSerializer(data = data)
+        
+        already_in_db = KitchenOrderDetail.objects.filter(_classroom = data['_classroom'], _dish = data['_dish'], _quantity = data['_quantity'], _kitchen_order = data['_kitchen_order'])
+                
+        if already_in_db:
+            serializer = KitchenOrderDetailSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+
+@csrf_exempt
+def KitchenOrderDetailViewID(request, _id):
+
+    try: 
+        item = KitchenOrderDetail.objects.get(_id = _id)
+
+    except KitchenOrderDetail.DoesNotExist:
+        raise Http404('Not found')
+
+    if request.method == 'GET':
+        serializer = KitchenOrderDetailSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = KitchenOrderDetailSerializer(item)
+        
+        if not('_classroom' in data):
+            data['_classroom'] = item_serializer.data['_classroom']
+            
+        if not('_dish' in data):
+            data['_dish'] = item_serializer.data['_dish']
+            
+        if not('_quantity' in data):
+            data['_quantity'] = item_serializer.data['_quantity']
+        
+        if not('_kitchen_order' in data):
+            data['_kitchen_order'] = item_serializer.data['_kitchen_order']
+        
+        already_in_db = KitchenOrderDetail.objects.filter(_classroom = data['_classroom'], _dish = data['_dish'], _quantity = data['_quantity'], _kitchen_order = data['_kitchen_order'])
+ 
+        if already_in_db:
+            serializer = KitchenOrderDetailSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = KitchenOrderDetailSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+    

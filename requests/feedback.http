@@ -1,0 +1,11 @@
+# * http://localhost:8000/api/feedback
+
+GET http://localhost:8000/api/feedback
+
+###
+
+POST http://localhost:8000/api/feedback
+
+{
+    "_feedback" : "1"
+}

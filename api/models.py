@@ -1,3 +1,4 @@
+from enum import unique
 from unittest.util import _MAX_LENGTH
 from django.db import models
 
@@ -68,11 +69,26 @@ class Classroom(models.Model):
         }
         return json_str
 
+class Feedback(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _feedback = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+
+    class Meta:
+        _id = ['_id']
+        _feedback = ['_feedback']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_feedback" : self._feedback
+        }
+        return json_str
+
 class Task(models.Model):
     _id = models.AutoField(primary_key = True)
     _name = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
     _due_date = models.DateField()
-    _feedback = models.TextField()
+    _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE)
     
     class Meta:
         _id = ['_id']
@@ -103,7 +119,24 @@ class KitchenOrder(models.Model):
 
 class KitchenOrderDetail(models.Model):
     _id = models.AutoField(primary_key = True)
-    _class = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+    _classroom = models.ForeignKey("Classroom", on_delete = models.CASCADE)
     _dish = models.ForeignKey("Dish", on_delete = models.CASCADE)
-    _quantity = models.DateField()
+    _quantity = models.IntegerField()
     _kitchen_order = models.ForeignKey("KitchenOrder", on_delete = models.CASCADE)
+    
+    class Meta:
+        _id = ['_id']
+        _classroom = ['_classroom']
+        _dish = ['_dish']
+        _quantity = ['_quantity']
+        _kitchen_order = ['_kitchen_order']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_classroom" : self._classroom,
+            "_dish" : self._dish,
+            "_quantity" : self._quantity,
+            "_kitchen_order" : self._kitchen_order
+        }
+        return json_str
