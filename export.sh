@@ -1,0 +1,1 @@
+docker exec -i api-db-1 /bin/bash -c "PGPASSWORD=password pg_dump --username admin appRendo" > dbexport.pgsql
