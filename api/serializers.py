@@ -1,10 +1,10 @@
 from dataclasses import fields
 from rest_framework import serializers
-from .models import AccesibleElement, DishType, Dish, Classroom, Feedback, Task, KitchenOrder, KitchenOrderDetail
+from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, Task, KitchenOrder, KitchenOrderDetail
  
-class AccesibleElementSerializer(serializers.ModelSerializer):
+class AccessibleElementSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AccesibleElement
+        model = AccessibleElement
         fields = ['_id', '_text', '_pictogram']
         
 class DishTypeSerializer(serializers.ModelSerializer):

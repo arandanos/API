@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import AccesibleElementView, AccesibleElementViewID, DishTypeView, DishTypeViewID, DishView, DishViewID, ClassroomView, ClassroomViewID, FeedbackView, TaskView, TaskViewID, KitchenOrderView, KitchenOrderViewID, KitchenOrderDetailView, KitchenOrderDetailViewID
+from api.views import AccessibleElementView, AccessibleElementViewID, DishTypeView, DishTypeViewID, DishView, DishViewID, ClassroomView, ClassroomViewID, FeedbackView, TaskView, TaskViewID, KitchenOrderView, KitchenOrderViewID, KitchenOrderDetailView, KitchenOrderDetailViewID
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/accesible_element', AccesibleElementView),
-    path('api/accesible_element/<_id>', AccesibleElementViewID),
+    path('api/accessible_element', AccessibleElementView),
+    path('api/accessible_element/<_id>', AccessibleElementViewID),
     path('api/dish_type', DishTypeView),
     path('api/dish_type/<_id>', DishTypeViewID),
     path('api/dish', DishView),

@@ -7,7 +7,7 @@ GET http://localhost:8000/api/accesible_element
 POST http://localhost:8000/api/accesible_element
 
 {
-    "_text" : "Clase E",
+    "_text" : "Clase F",
     "_pictogram": "https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg"
 }
 

@@ -1,35 +1,48 @@
+import json
 from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccesibleElement, DishType, Dish, Classroom, Feedback, KitchenOrderDetail, Task, KitchenOrder
-from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, FeedbackSerializer, TaskSerializer, KitchenOrderSerializer, KitchenOrderDetailSerializer
+from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, KitchenOrderDetail, Task, KitchenOrder
+from .serializers import AccessibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, FeedbackSerializer, TaskSerializer, KitchenOrderSerializer, KitchenOrderDetailSerializer
 
-# Create your views here.
-# *****************************
-# *     ACCESIBLE ELEMENT     *
-# *****************************
+# ******************************
+# *     ACCESSIBLE ELEMENT     *
+# ******************************
+
+#· MÉTODOS AUXILIARES
+# Devuelve todos los Elementos accessibles de la tabla de la DB
+def getAllAccessibleElements():
+    return AccessibleElement.objects.all().order_by('_id').values()
+
+# Devuelve el elemente de la base de datos que corresponda con el id
+def getAccessibleElementByID(_id):
+    item = AccessibleElement.objects.get(_id = _id)
+    item_serializer = AccessibleElementSerializer(item)
+    return item_serializer.data
+    
+
 # Peticiones GET y POST simples
 @csrf_exempt
-def AccesibleElementView(request):
-    # Devuelve todos los elementos de la tabla Accesible_Element
+def AccessibleElementView(request):
+    # Devuelve todos los elementos de la tabla Accessible_Element
     if request.method == 'GET':
-        accesibles_elements = AccesibleElement.objects.all().order_by('_id').values()
-        serializer = AccesibleElementSerializer(accesibles_elements, many = True)
+        accessible_elements = getAllAccessibleElements()
+        serializer = AccessibleElementSerializer(accessible_elements, many = True)
         data = {
-            'clases': serializer.data
+            'accessible_elements': serializer.data
         }
         return JsonResponse(data, safe = False)
     
     # Crea una nueva entrada en la tabla Accesible_Element si no hay ninguno con la misma información
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = AccesibleElementSerializer(data = data)
+        serializer = AccessibleElementSerializer(data = data)
         
-        already_in_db = AccesibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
+        already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
                 
         if already_in_db:
-            serializer = AccesibleElementSerializer(already_in_db[0])
+            serializer = AccessibleElementSerializer(already_in_db[0])
             return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
@@ -39,23 +52,23 @@ def AccesibleElementView(request):
     
 # Peticiones GET y POST pasando una ID como argumento
 @csrf_exempt
-def AccesibleElementViewID(request, _id):
+def AccessibleElementViewID(request, _id):
     # Comprobación de que existe un elemento en la tabla con la ID
     try: 
-        item = AccesibleElement.objects.get(_id = _id)
+        item =  AccessibleElement.objects.get(_id = _id)
     # Si no existe se lanza un error 404
-    except AccesibleElement.DoesNotExist:
+    except AccessibleElement.DoesNotExist:
         raise Http404('Not found')
     
     # Se devuelve la entrada de la tabla con igual ID
     if request.method == 'GET':
-        serializer = AccesibleElementSerializer(item)
+        serializer = AccessibleElementSerializer(item)
         return JsonResponse(serializer.data, safe = False)
     
     # Se modifica la entrada de la tabla con igual ID si no existe otro elemento que tenga la misma informacón tras modificar la entrada
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        item_serializer = AccesibleElementSerializer(item)
+        item_serializer = AccessibleElementSerializer(item)
         
         if not('_text' in data):
             data['_text'] = item_serializer.data['_text']
@@ -64,13 +77,13 @@ def AccesibleElementViewID(request, _id):
             data['_pictogram'] = item_serializer.data['_pictogram']
         
         # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
-        already_in_db = AccesibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
+        already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
  
         if already_in_db:
-            serializer = AccesibleElementSerializer(already_in_db[0])
+            serializer = AccessibleElementSerializer(already_in_db[0])
             return JsonResponse(serializer.data, safe = False)
         else:
-            serializer = AccesibleElementSerializer(item, data = data)
+            serializer = AccessibleElementSerializer(item, data = data)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data)
@@ -197,12 +210,27 @@ def DishViewID(request, _id):
 # *         CLASSROOM         *
 # *****************************
 
+def concatClassWithAccessibleElem(item):
+    accessibleElement = getAccessibleElementByID(item['_class_code'])
+    data = {
+        "_id": item['_id'],
+        "_accessible_element": accessibleElement
+    }
+    return data
+
+
 @csrf_exempt
 def ClassroomView(request):
     if request.method == 'GET':
-        classrooms = Classroom.objects.all().order_by('_id').values()
+        classrooms = Classroom.objects.all().order_by('_id')
         serializer = ClassroomSerializer(classrooms, many = True)
-        return JsonResponse(serializer.data, safe = False)
+
+        data = []
+
+        for classroom in serializer.data:
+            data.append(concatClassWithAccessibleElem(classroom))
+
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -230,7 +258,8 @@ def ClassroomViewID(request, _id):
 
     if request.method == 'GET':
         serializer = ClassroomSerializer(item)
-        return JsonResponse(serializer.data, safe = False)
+        data = concatClassWithAccessibleElem(serializer.data)
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -383,7 +412,7 @@ def KitchenOrderViewID(request, _id):
 
     try: 
         item = KitchenOrder.objects.get(_id = _id)
-    except AccesibleElement.DoesNotExist:
+    except AccessibleElement.DoesNotExist:
         raise Http404('Not found')
     
     if request.method == 'GET':

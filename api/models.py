@@ -6,7 +6,7 @@ from unittest.util import _MAX_LENGTH
 from django.db import models
 
 # Create your models here.
-class AccesibleElement(models.Model):
+class AccessibleElement(models.Model):
     _id = models.AutoField(primary_key = True)
     _text = models.TextField()
     _pictogram = models.TextField()
@@ -38,7 +38,7 @@ class DishType(models.Model):
 
 class Dish(models.Model):
     _id = models.AutoField(primary_key = True)
-    _name = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _type = models.ForeignKey("DishType", on_delete = models.CASCADE)
     
     class Meta:
@@ -56,7 +56,7 @@ class Dish(models.Model):
 
 class Classroom(models.Model):
     _id = models.AutoField(primary_key = True)
-    _class_code = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+    _class_code = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     
     class Meta:
         _id = ['_id']
@@ -71,7 +71,7 @@ class Classroom(models.Model):
 
 class Feedback(models.Model):
     _id = models.AutoField(primary_key = True)
-    _feedback = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+    _feedback = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
 
     class Meta:
         _id = ['_id']
@@ -86,7 +86,7 @@ class Feedback(models.Model):
 
 class Task(models.Model):
     _id = models.AutoField(primary_key = True)
-    _name = models.ForeignKey("AccesibleElement", on_delete = models.CASCADE)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _due_date = models.DateField()
     _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE)
     
