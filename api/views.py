@@ -90,7 +90,7 @@ def AccesibleElementViewID(request, _id):
 def DishTypeView(request):
     
     if request.method == 'GET':
-        dish_types = DishType.objects.all()
+        dish_types = DishType.objects.all().order_by('_id').values()
         serializer = DishTypeSerializer(dish_types, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -134,7 +134,7 @@ def DishTypeViewID(request, _id):
 @csrf_exempt
 def DishView(request):
     if request.method == 'GET':
-        dishes = Dish.objects.all()
+        dishes = Dish.objects.all().order_by('_id').values()
         serializer = DishSerializer(dishes, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -200,7 +200,7 @@ def DishViewID(request, _id):
 @csrf_exempt
 def ClassroomView(request):
     if request.method == 'GET':
-        classrooms = Classroom.objects.all()
+        classrooms = Classroom.objects.all().order_by('_id').values()
         serializer = ClassroomSerializer(classrooms, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -263,7 +263,7 @@ def ClassroomViewID(request, _id):
 @csrf_exempt
 def FeedbackView(request):
     if request.method == 'GET':
-        feedbacks = Feedback.objects.all()
+        feedbacks = Feedback.objects.all().order_by('_id').values()
         serializer = FeedbackSerializer(feedbacks, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -289,7 +289,7 @@ def FeedbackView(request):
 @csrf_exempt
 def TaskView(request):
     if request.method == 'GET':
-        tasks = Task.objects.all()
+        tasks = Task.objects.all().order_by('_id').values()
         serializer = TaskSerializer(tasks, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -359,7 +359,7 @@ def TaskViewID(request, _id):
 def KitchenOrderView(request):
     
     if request.method == 'GET':
-        kitchen_orders = KitchenOrder.objects.all()
+        kitchen_orders = KitchenOrder.objects.all().order_by('_id').values()
         serializer = KitchenOrderSerializer(kitchen_orders, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -402,7 +402,7 @@ def KitchenOrderViewID(request, _id):
 def KitchenOrderDetailView(request):
     
     if request.method == 'GET':
-        kitchen_orders_deatils = KitchenOrderDetail.objects.all()
+        kitchen_orders_deatils = KitchenOrderDetail.objects.all().order_by('_id').values()
         serializer = KitchenOrderDetailSerializer(kitchen_orders_deatils, many = True)
         return JsonResponse(serializer.data, safe = False)
     
