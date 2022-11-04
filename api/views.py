@@ -14,9 +14,12 @@ from .serializers import AccesibleElementSerializer, DishTypeSerializer, DishSer
 def AccesibleElementView(request):
     # Devuelve todos los elementos de la tabla Accesible_Element
     if request.method == 'GET':
-        accesibles_elements = AccesibleElement.objects.all()
+        accesibles_elements = AccesibleElement.objects.all().order_by('_id').values()
         serializer = AccesibleElementSerializer(accesibles_elements, many = True)
-        return JsonResponse(serializer.data, safe = False)
+        data = {
+            'clases': serializer.data
+        }
+        return JsonResponse(data, safe = False)
     
     # Crea una nueva entrada en la tabla Accesible_Element si no hay ninguno con la misma información
     elif request.method == 'POST':
