@@ -1,0 +1,30 @@
+# * http://localhost:8000/api/accesible_element
+
+GET http://localhost:8000/api/accessible_element
+
+###
+
+POST http://localhost:8000/api/accessible_element
+
+{
+    "_text" : "FRUTA",
+    "_pictogram": "https://api.arasaac.org/api/pictograms/4653?download=false"
+}
+
+### * http://localhost:8000/api/accesible_element/<_id>
+
+GET http://localhost:8000/api/accessible_element/1
+
+###
+
+PUT http://localhost:8000/api/accessible_element/11
+
+{
+    "_text" : "Fruta",
+    "_pictogram" : "https://api.arasaac.org/api/pictograms/4653?download=false"
+}
+
+
+###
+
+DELETE http://localhost:8000/api/accessible_element/13

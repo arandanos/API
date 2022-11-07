@@ -7,7 +7,7 @@ GET http://localhost:8000/api/dish
 POST http://localhost:8000/api/dish
 
 {
-    "_name" : "15",
+    "_name" : "11",
     "_type": "POSTRE"
 }
 

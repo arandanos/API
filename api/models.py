@@ -88,7 +88,7 @@ class Task(models.Model):
     _id = models.AutoField(primary_key = True)
     _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _due_date = models.DateField()
-    _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE)
+    _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE, null=True, blank=True)
     
     class Meta:
         _id = ['_id']

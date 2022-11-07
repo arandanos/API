@@ -144,12 +144,27 @@ def DishTypeViewID(request, _id):
 # *            DISH            *
 # ******************************
 
+def concatDishWithAccessibleElem(item):
+    accessibleElement = getAccessibleElementByID(item['_name'])
+    data = {
+        "_id": item['_id'],
+        "_type": item['_type'],
+        "_accessible_element": accessibleElement
+    }
+    return data
+
 @csrf_exempt
 def DishView(request):
     if request.method == 'GET':
-        dishes = Dish.objects.all().order_by('_id').values()
+        dishes = Dish.objects.all().order_by('_id')
         serializer = DishSerializer(dishes, many = True)
-        return JsonResponse(serializer.data, safe = False)
+
+        data = []
+
+        for dish in serializer.data:
+            data.append(concatDishWithAccessibleElem(dish))
+
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -177,7 +192,8 @@ def DishViewID(request, _id):
 
     if request.method == 'GET':
         serializer = DishSerializer(item)
-        return JsonResponse(serializer.data, safe = False)
+        data = concatDishWithAccessibleElem(serializer.data)
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -217,7 +233,6 @@ def concatClassWithAccessibleElem(item):
         "_accessible_element": accessibleElement
     }
     return data
-
 
 @csrf_exempt
 def ClassroomView(request):
@@ -315,19 +330,39 @@ def FeedbackView(request):
 # *           TASK           *
 # ****************************
 
+def concatTaskWithAccessibleElem(item):
+    accessibleElement = getAccessibleElementByID(item['_name'])
+    data = {
+        "_id": item['_id'],
+        "_due_date": item['_due_date'],
+        "_feedback": item['_feedback'],
+        "_accessible_element": accessibleElement
+    }
+    return data
+
 @csrf_exempt
 def TaskView(request):
     if request.method == 'GET':
-        tasks = Task.objects.all().order_by('_id').values()
+        tasks = Task.objects.all().order_by('_id')
         serializer = TaskSerializer(tasks, many = True)
-        return JsonResponse(serializer.data, safe = False)
+
+        data = []
+
+        for task in serializer.data:
+            data.append(concatTaskWithAccessibleElem(task))
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = TaskSerializer(data = data)
         
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
                 
+        if 'feedback' in data:
+            already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+     
+            
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
             return JsonResponse(serializer.data, status = 201)
@@ -348,7 +383,8 @@ def TaskViewID(request, _id):
 
     if request.method == 'GET':
         serializer = TaskSerializer(item)
-        return JsonResponse(serializer.data, safe = False)
+        data = concatTaskWithAccessibleElem(serializer.data)
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
