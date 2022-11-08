@@ -200,7 +200,8 @@ CREATE TABLE public.api_task (
     _id integer NOT NULL,
     _due_date date NOT NULL,
     _feedback_id integer,
-    _name_id integer NOT NULL
+    _name_id integer NOT NULL,
+    _type text NOT NULL
 );
 
 
@@ -574,9 +575,9 @@ COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _ki
 -- Data for Name: api_task; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.api_task (_id, _due_date, _feedback_id, _name_id) FROM stdin;
-1	2022-03-22	\N	7
-2	2022-11-22	\N	8
+COPY public.api_task (_id, _due_date, _feedback_id, _name_id, _type) FROM stdin;
+1	2022-03-22	\N	7	COMANDA
+2	2022-11-22	\N	8	MATERIAL
 \.
 
 
@@ -746,6 +747,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 21	api	0003_rename_accesibleelement_accessibleelement	2022-11-04 18:23:11.969055+00
 22	api	0004_alter_task__feedback	2022-11-07 17:40:07.646677+00
 23	api	0005_alter_task__feedback	2022-11-07 17:56:29.944697+00
+24	api	0006_task__type	2022-11-08 16:39:18.082395+00
 \.
 
 
@@ -866,7 +868,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 14, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 23, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 24, true);
 
 
 --
