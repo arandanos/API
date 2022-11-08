@@ -336,6 +336,7 @@ def concatTaskWithAccessibleElem(item):
         "_id": item['_id'],
         "_due_date": item['_due_date'],
         "_feedback": item['_feedback'],
+        "_type": item['_type'],
         "_accessible_element": accessibleElement
     }
     return data
