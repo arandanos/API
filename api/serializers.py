@@ -30,7 +30,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['_id', '_name', '_due_date', '_feedback', '_type']
+        fields = ['_id', '_name', '_due_date', '_feedback']
         
 class KitchenOrderSerializer(serializers.ModelSerializer):
     class Meta:
