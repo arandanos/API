@@ -89,6 +89,7 @@ class Task(models.Model):
     _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _due_date = models.DateField()
     _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE, null=True, blank=True)
+    _type = models.TextField()
     
     class Meta:
         _id = ['_id']
