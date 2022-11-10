@@ -90,19 +90,24 @@ class Task(models.Model):
     _due_date = models.DateField()
     _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE, null=True, blank=True)
     _type = models.TextField()
+    _status = models.BooleanField(default=False)
     
     class Meta:
         _id = ['_id']
         _name = ['_name']
         _due_date = ['_due_date']
         _feedback = ['_feedback']
+        _type = ['_type']
+        _status = ['_status']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
             "_name" : self._name,
             "_due_date" : self._due_date,
-            "_feedback" : self._feedback
+            "_feedback" : self._feedback,
+            "_type" : self._type,
+            "_status" : self._status
         }
         return json_str
 

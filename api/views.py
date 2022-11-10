@@ -399,7 +399,13 @@ def TaskViewID(request, _id):
         if not('_feedback' in data):
             data['_feedback'] = item_serializer.data['_feedback']
         
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+        if not('_type' in data):
+            data['_type'] = item_serializer.data['_type']
+        
+        if not('_status' in data):
+            data['_status'] = item_serializer.data['_status']
+        
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _type = data['_type'], _status = data['_status'])
  
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
