@@ -107,14 +107,17 @@ class Task(models.Model):
         return json_str
 
 class KitchenOrder(models.Model):
-    _id = models.ForeignKey("Task", on_delete = models.CASCADE)
+    _id = models.AutoField(primary_key = True)
+    _task = models.ForeignKey("Task", on_delete = models.CASCADE)
     
     class Meta:
         _id = ['_id']
+        _taks = ['_task']
  
     def __str__(self):
         json_str = {
-            "_id" : self._id
+            "_id" : self._id,
+            "_task" : self._task
         }
         return json_str
 

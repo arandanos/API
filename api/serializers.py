@@ -35,7 +35,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class KitchenOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = KitchenOrder
-        fields = ['_id']
+        fields = ['_id', '_task']
 
 class KitchenOrderDetailSerializer(serializers.ModelSerializer):
     class Meta:

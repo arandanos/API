@@ -432,7 +432,7 @@ def KitchenOrderView(request):
         data = JSONParser().parse(request)
         serializer = KitchenOrderSerializer(data = data)
         
-        already_in_db = KitchenOrder.objects.filter(_id = data['_id'])
+        already_in_db = KitchenOrder.objects.filter(_task = data['_task'])
                 
         if already_in_db:
             serializer = KitchenOrderSerializer(already_in_db[0])
