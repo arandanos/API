@@ -201,7 +201,8 @@ CREATE TABLE public.api_task (
     _due_date date NOT NULL,
     _type text NOT NULL,
     _feedback_id integer,
-    _name_id integer NOT NULL
+    _name_id integer NOT NULL,
+    _status boolean NOT NULL
 );
 
 
@@ -568,9 +569,9 @@ COPY public.api_kitchenorder (_id, _task_id) FROM stdin;
 --
 
 COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _kitchen_order_id) FROM stdin;
-1	0	1	1	1
-2	0	1	2	1
-3	0	1	3	1
+2	2	1	2	1
+3	2	1	3	1
+1	6	1	1	1
 \.
 
 
@@ -578,8 +579,9 @@ COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _ki
 -- Data for Name: api_task; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-COPY public.api_task (_id, _due_date, _type, _feedback_id, _name_id) FROM stdin;
-1	2022-11-22	COMANDA	\N	7
+COPY public.api_task (_id, _due_date, _type, _feedback_id, _name_id, _status) FROM stdin;
+1	2022-11-22	COMANDA	\N	7	f
+2	2022-10-10	MATERIAL	\N	8	f
 \.
 
 
@@ -722,25 +724,26 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 --
 
 COPY public.django_migrations (id, app, name, applied) FROM stdin;
-1	contenttypes	0001_initial	2022-11-10 17:48:58.99202+00
-2	auth	0001_initial	2022-11-10 17:48:59.493837+00
-3	admin	0001_initial	2022-11-10 17:48:59.602616+00
-4	admin	0002_logentry_remove_auto_add	2022-11-10 17:48:59.615938+00
-5	admin	0003_logentry_add_action_flag_choices	2022-11-10 17:48:59.631904+00
-6	api	0001_initial	2022-11-10 17:49:00.270224+00
-7	contenttypes	0002_remove_content_type_name	2022-11-10 17:49:00.332476+00
-8	auth	0002_alter_permission_name_max_length	2022-11-10 17:49:00.355262+00
-9	auth	0003_alter_user_email_max_length	2022-11-10 17:49:00.381335+00
-10	auth	0004_alter_user_username_opts	2022-11-10 17:49:00.401951+00
-11	auth	0005_alter_user_last_login_null	2022-11-10 17:49:00.422226+00
-12	auth	0006_require_contenttypes_0002	2022-11-10 17:49:00.429079+00
-13	auth	0007_alter_validators_add_error_messages	2022-11-10 17:49:00.446837+00
-14	auth	0008_alter_user_username_max_length	2022-11-10 17:49:00.492366+00
-15	auth	0009_alter_user_last_name_max_length	2022-11-10 17:49:00.507208+00
-16	auth	0010_alter_group_name_max_length	2022-11-10 17:49:00.534843+00
-17	auth	0011_update_proxy_permissions	2022-11-10 17:49:00.558106+00
-18	auth	0012_alter_user_first_name_max_length	2022-11-10 17:49:00.578685+00
-19	sessions	0001_initial	2022-11-10 17:49:00.652458+00
+1	contenttypes	0001_initial	2022-11-11 08:44:31.395051+00
+2	auth	0001_initial	2022-11-11 08:44:31.697567+00
+3	admin	0001_initial	2022-11-11 08:44:31.773129+00
+4	admin	0002_logentry_remove_auto_add	2022-11-11 08:44:31.781045+00
+5	admin	0003_logentry_add_action_flag_choices	2022-11-11 08:44:31.789947+00
+6	api	0001_initial	2022-11-11 08:44:32.175548+00
+7	api	0002_task__status	2022-11-11 08:44:32.212058+00
+8	contenttypes	0002_remove_content_type_name	2022-11-11 08:44:32.233203+00
+9	auth	0002_alter_permission_name_max_length	2022-11-11 08:44:32.243429+00
+10	auth	0003_alter_user_email_max_length	2022-11-11 08:44:32.253705+00
+11	auth	0004_alter_user_username_opts	2022-11-11 08:44:32.263012+00
+12	auth	0005_alter_user_last_login_null	2022-11-11 08:44:32.272912+00
+13	auth	0006_require_contenttypes_0002	2022-11-11 08:44:32.276892+00
+14	auth	0007_alter_validators_add_error_messages	2022-11-11 08:44:32.286434+00
+15	auth	0008_alter_user_username_max_length	2022-11-11 08:44:32.318581+00
+16	auth	0009_alter_user_last_name_max_length	2022-11-11 08:44:32.328886+00
+17	auth	0010_alter_group_name_max_length	2022-11-11 08:44:32.344945+00
+18	auth	0011_update_proxy_permissions	2022-11-11 08:44:32.357918+00
+19	auth	0012_alter_user_first_name_max_length	2022-11-11 08:44:32.371876+00
+20	sessions	0001_initial	2022-11-11 08:44:32.437455+00
 \.
 
 
@@ -791,14 +794,14 @@ SELECT pg_catalog.setval('public.api_kitchenorder__id_seq', 1, false);
 -- Name: api_kitchenorderdetail__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_kitchenorderdetail__id_seq', 1, false);
+SELECT pg_catalog.setval('public.api_kitchenorderdetail__id_seq', 3, true);
 
 
 --
 -- Name: api_task__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_task__id_seq', 2, true);
+SELECT pg_catalog.setval('public.api_task__id_seq', 3, true);
 
 
 --
@@ -861,7 +864,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 14, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 24, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 25, true);
 
 
 --

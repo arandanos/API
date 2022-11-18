@@ -13,7 +13,7 @@ from .serializers import AccessibleElementSerializer, DishTypeSerializer, DishSe
 #· MÉTODOS AUXILIARES
 # Devuelve todos los Elementos accessibles de la tabla de la DB
 def getAllAccessibleElements():
-    return AccessibleElement.objects.all().order_by('_id').values()
+    return AccessibleElement.objects.all().order_by('_id')
 
 # Devuelve el elemente de la base de datos que corresponda con el id
 def getAccessibleElementByID(_id):
@@ -103,7 +103,7 @@ def AccessibleElementViewID(request, _id):
 def DishTypeView(request):
     
     if request.method == 'GET':
-        dish_types = DishType.objects.all().order_by('_id').values()
+        dish_types = DishType.objects.all().order_by('_id')
         serializer = DishTypeSerializer(dish_types, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -307,7 +307,7 @@ def ClassroomViewID(request, _id):
 @csrf_exempt
 def FeedbackView(request):
     if request.method == 'GET':
-        feedbacks = Feedback.objects.all().order_by('_id').values()
+        feedbacks = Feedback.objects.all().order_by('_id')
         serializer = FeedbackSerializer(feedbacks, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -432,7 +432,7 @@ def TaskViewID(request, _id):
 def KitchenOrderView(request):
     
     if request.method == 'GET':
-        kitchen_orders = KitchenOrder.objects.all().order_by('_id').values()
+        kitchen_orders = KitchenOrder.objects.all().order_by('_id')
         serializer = KitchenOrderSerializer(kitchen_orders, many = True)
         return JsonResponse(serializer.data, safe = False)
     
@@ -475,7 +475,7 @@ def KitchenOrderViewID(request, _id):
 def KitchenOrderDetailView(request):
     
     if request.method == 'GET':
-        kitchen_orders_deatils = KitchenOrderDetail.objects.all().order_by('_id').values()
+        kitchen_orders_deatils = KitchenOrderDetail.objects.all().order_by('_id')
         serializer = KitchenOrderDetailSerializer(kitchen_orders_deatils, many = True)
         return JsonResponse(serializer.data, safe = False)
     

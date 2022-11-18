@@ -7,7 +7,10 @@ GET http://localhost:8000/api/kitchen_order_detail
 POST http://localhost:8000/api/kitchen_order_detail
 
 {
-    "_id" : "1"
+    "_quantity" : "0",
+    "_classroom" : "1",
+    "_dish" : "3",
+    "_kitchen_order" : "1"
 }
 
 ### * http://localhost:8000/api/kitchen_order_detail/<_id>
