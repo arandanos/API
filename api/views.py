@@ -359,10 +359,10 @@ def TaskView(request):
         serializer = TaskSerializer(data = data)
         
 
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _auto_feedback = data['_auto_feedback'])
                 
         if 'feedback' in data:
-            already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+            already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _auto_feedback = data['_auto_feedback'])
      
             
         if already_in_db:
@@ -406,8 +406,11 @@ def TaskViewID(request, _id):
         
         if not('_status' in data):
             data['_status'] = item_serializer.data['_status']
+            
+        if not('_auto_feedback' in data):
+            data['_auto_feedback'] = item_serializer.data['_auto_feedback']
         
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _type = data['_type'], _status = data['_status'])
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _type = data['_type'], _status = data['_status'], _auto_feedback = data['_auto_feedback'])
  
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
@@ -440,7 +443,7 @@ def KitchenOrderView(request):
         data = JSONParser().parse(request)
         serializer = KitchenOrderSerializer(data = data)
         
-        already_in_db = KitchenOrder.objects.filter(_task = data['_task'])
+        already_in_db = KitchenOrder.objects.filter(_task = data['_task'], _auto_calc = data['_auto_calc'])
                 
         if already_in_db:
             serializer = KitchenOrderSerializer(already_in_db[0])

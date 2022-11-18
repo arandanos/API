@@ -91,6 +91,7 @@ class Task(models.Model):
     _feedback = models.ForeignKey("Feedback", on_delete = models.CASCADE, null=True, blank=True)
     _type = models.TextField()
     _status = models.BooleanField(default=False)
+    _auto_feedback = models.BooleanField(default=False)
     
     class Meta:
         _id = ['_id']
@@ -99,6 +100,7 @@ class Task(models.Model):
         _feedback = ['_feedback']
         _type = ['_type']
         _status = ['_status']
+        _auto_feedback = ['_auto_feedback']
  
     def __str__(self):
         json_str = {
@@ -107,22 +109,26 @@ class Task(models.Model):
             "_due_date" : self._due_date,
             "_feedback" : self._feedback,
             "_type" : self._type,
-            "_status" : self._status
+            "_status" : self._status,
+            "_auto_feedback" : self._auto_feedback
         }
         return json_str
 
 class KitchenOrder(models.Model):
     _id = models.AutoField(primary_key = True)
     _task = models.ForeignKey("Task", on_delete = models.CASCADE)
+    _auto_calc = models.BooleanField(default=False)
     
     class Meta:
         _id = ['_id']
         _taks = ['_task']
+        _auto_calc = ['_auto_calc']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
-            "_task" : self._task
+            "_task" : self._task,
+            "_auto_calc" : self._auto_calc,
         }
         return json_str
 
