@@ -1,7 +1,7 @@
 # API
 Para ejecutar la API: 
 
-```
+```bash
 $ docker compose build
 
 $ docker compose run web python manage.py makemigrations
