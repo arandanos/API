@@ -9,7 +9,8 @@ POST http://localhost:8000/api/task
 {
     "_name" : "1",
     "_due_date": "2022-11-22",
-    "_type": "COMANDA"
+    "_type": "MATERIAL"
+
 }
 
 ### * http://localhost:8000/api/task/<_id>
