@@ -1,6 +1,6 @@
 from dataclasses import fields
 from rest_framework import serializers
-from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, Task, KitchenOrder, KitchenOrderDetail
+from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, Task, KitchenOrder, KitchenOrderDetail, Color, Material, MaterialTask, MaterialTaskDetail
  
 class AccessibleElementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,3 +41,23 @@ class KitchenOrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = KitchenOrderDetail
         fields = ['_id', '_classroom', '_dish', '_quantity', '_kitchen_order']
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Color
+        fields = ['_id', '_color']
+
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        fields = ['_id', '_item', '_color', '_quantity']
+
+class MaterialTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialTask
+        fields = ['_id', '_task', '_classroom']
+
+class MaterialTaskDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialTask
+        fields = ['_id', '_material_task', '_material', '_task_quantity']

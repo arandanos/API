@@ -3,8 +3,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, KitchenOrderDetail, Task, KitchenOrder
-from .serializers import AccessibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, FeedbackSerializer, TaskSerializer, KitchenOrderSerializer, KitchenOrderDetailSerializer
+from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, KitchenOrderDetail, Task, KitchenOrder, Color, Material, MaterialTask, MaterialTaskDetail
+from .serializers import AccessibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, FeedbackSerializer, TaskSerializer, KitchenOrderSerializer, KitchenOrderDetailSerializer, ColorSerializer, MaterialSerializer, MaterialTaskSerializer, MaterialTaskDetailSerializer
 
 # ******************************
 # *     ACCESSIBLE ELEMENT     *
@@ -542,4 +542,234 @@ def KitchenOrderDetailViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+
+# *****************************
+# *           COLOR           *
+# *****************************
+
+@csrf_exempt
+def ColorView(request):
+    if request.method == 'GET':
+        colors = Color.objects.all().order_by('_id')
+        serializer = FeedbackSerializer(colors, many = True)
+        return JsonResponse(serializer.data, safe = False)
     
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ColorSerializer(data = data)
+        
+        already_in_db = Color.objects.filter(_feedback = data['_color'])
+                
+        if already_in_db:
+            serializer = ColorSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+
+# **************************
+# *        MATERIAL        *
+# **************************
+
+@csrf_exempt
+def MaterialView(request):
+    
+    if request.method == 'GET':
+        materials = Material.objects.all().order_by('_id')
+        serializer = MaterialSerializer(materials, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = MaterialSerializer(data = data)
+        
+        already_in_db = Material.objects.filter(_item = data['_item'], _color = data['_color'])
+                
+        if already_in_db:
+            serializer = KitchenOrderSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+    
+@csrf_exempt
+def MaterialViewID(request, _id):
+
+    try: 
+        item = Material.objects.get(_id = _id)
+    except Material.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = MaterialSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = MaterialSerializer(item)
+        
+        if not('_item' in data):
+            data['_item'] = item_serializer.data['_item']
+
+        if not('_color' in data):
+            data['_color'] = item_serializer.data['_color']
+
+        if not('_quantity' in data):
+            data['_quantity'] = item_serializer.data['_quantity']
+        
+        already_in_db = Material.objects.filter(_item = data['_item'], _color = data['_color'], _quantity = data['_quantity'])
+ 
+        if already_in_db:
+            serializer = MaterialSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = MaterialSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+
+# ***************************
+# *      MATERIAL TASK      *
+# ***************************
+
+@csrf_exempt
+def MaterialTaskView(request):
+    
+    if request.method == 'GET':
+        materials = MaterialTask.objects.all().order_by('_id')
+        serializer = MaterialTaskSerializer(materials, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = MaterialTaskSerializer(data = data)
+        
+        already_in_db = MaterialTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+                
+        if already_in_db:
+            serializer = MaterialTaskSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+    
+@csrf_exempt
+def MaterialTaskViewID(request, _id):
+
+    try: 
+        item = MaterialTask.objects.get(_id = _id)
+    except MaterialTask.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = MaterialTaskSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = MaterialTaskSerializer(item)
+        
+        if not('_task' in data):
+            data['_task'] = item_serializer.data['_task']
+
+        if not('_classroom' in data):
+            data['_classroom'] = item_serializer.data['_classroom']
+        
+        already_in_db = MaterialTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+ 
+        if already_in_db:
+            serializer = MaterialTaskSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = MaterialSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+
+# ********************************
+# *     MATERIAL TASK DETAIL     *
+# ********************************
+
+@csrf_exempt
+def MaterialTaskDetailView(request):
+    
+    if request.method == 'GET':
+        materials = MaterialTaskDetail.objects.all().order_by('_id')
+        serializer = MaterialTaskDetailSerializer(materials, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = MaterialTaskDetailSerializer(data = data)
+        
+        already_in_db = MaterialTaskDetail.objects.filter(_material_task = data['_material_task'], _material = data['_material'], _task_quantity = data['_task_quantity'])
+                
+        if already_in_db:
+            serializer = MaterialTaskDetailSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, status = 201)
+        elif serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status = 201)
+        
+        return JsonResponse(serializer.errors, status = 400)
+    
+@csrf_exempt
+def MaterialTaskDetailViewID(request, _id):
+
+    try: 
+        item = MaterialTaskDetail.objects.get(_id = _id)
+    except MaterialTaskDetail.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = MaterialTaskDetailSerializer(item)
+        return JsonResponse(serializer.data, safe = False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = MaterialTaskDetailSerializer(item)
+        
+        if not('_material_task' in data):
+            data['_material_task'] = item_serializer.data['_material_task']
+
+        if not('_material' in data):
+            data['_material'] = item_serializer.data['_material']
+        
+        if not('_task_quantity' in data):
+            data['_task_quantity'] = item_serializer.data['_task_quantity']
+        
+        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _material = data['_material'], _task_quantity = data['_task_quantity'])
+ 
+        if already_in_db:
+            serializer = MaterialTaskDetailSerializer(already_in_db[0])
+            return JsonResponse(serializer.data, safe = False)
+        else:
+            serializer = MaterialSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
