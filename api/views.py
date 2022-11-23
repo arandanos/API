@@ -11,10 +11,6 @@ from .serializers import AccessibleElementSerializer, DishTypeSerializer, DishSe
 # ******************************
 
 #· MÉTODOS AUXILIARES
-# Devuelve todos los Elementos accessibles de la tabla de la DB
-def getAllAccessibleElements():
-    return AccessibleElement.objects.all().order_by('_id')
-
 # Devuelve el elemente de la base de datos que corresponda con el id
 def getAccessibleElementByID(_id):
     item = AccessibleElement.objects.get(_id = _id)
@@ -27,7 +23,7 @@ def getAccessibleElementByID(_id):
 def AccessibleElementView(request):
     # Devuelve todos los elementos de la tabla Accessible_Element
     if request.method == 'GET':
-        accessible_elements = getAllAccessibleElements()
+        accessible_elements = AccessibleElement.objects.all().order_by('_id')
         serializer = AccessibleElementSerializer(accessible_elements, many = True)
         data = {
             'accessible_elements': serializer.data
@@ -573,6 +569,23 @@ def ColorView(request):
 # **************************
 # *        MATERIAL        *
 # **************************
+def concatColorWithAccessibleElem(_id):
+    accessibleElement = getAccessibleElementByID(_id)
+    data = {
+        "_id": _id,
+        "_color": accessibleElement
+    }
+    return data
+
+def concatMaterialWithAccessibleElem(item):
+    accessibleElement = getAccessibleElementByID(item['_item'])
+    data = {
+        "_id": item['_id'],
+        "_item": accessibleElement,
+        "_color": concatColorWithAccessibleElem(item['_color']),
+        "_quantity": item['_quantity']
+    }
+    return data
 
 @csrf_exempt
 def MaterialView(request):
@@ -580,7 +593,13 @@ def MaterialView(request):
     if request.method == 'GET':
         materials = Material.objects.all().order_by('_id')
         serializer = MaterialSerializer(materials, many = True)
-        return JsonResponse(serializer.data, safe = False)
+
+        data = []
+
+        for material in serializer.data:
+            data.append(concatMaterialWithAccessibleElem(material))
+
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -607,6 +626,7 @@ def MaterialViewID(request, _id):
     
     if request.method == 'GET':
         serializer = MaterialSerializer(item)
+        data = concatMaterialWithAccessibleElem(serializer.data)
         return JsonResponse(serializer.data, safe = False)
 
     elif request.method == 'PUT':
@@ -626,12 +646,14 @@ def MaterialViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
+            data = concatMaterialWithAccessibleElem(serializer.data)
+            return JsonResponse(data, safe = False)
         else:
             serializer = MaterialSerializer(item, data = data)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse(serializer.data)
+                data = concatMaterialWithAccessibleElem(serializer.data)
+                return JsonResponse(data)
         
         return HttpResponse(status = 400)
     
