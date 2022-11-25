@@ -3,8 +3,8 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import AccessibleElement, DishType, Dish, Classroom, Feedback, KitchenOrderDetail, Task, KitchenOrder, Color, Material, MaterialTask, MaterialTaskDetail
-from .serializers import AccessibleElementSerializer, DishTypeSerializer, DishSerializer, ClassroomSerializer, FeedbackSerializer, TaskSerializer, KitchenOrderSerializer, KitchenOrderDetailSerializer, ColorSerializer, MaterialSerializer, MaterialTaskSerializer, MaterialTaskDetailSerializer
+from .models import *
+from .serializers import  *
 
 # ******************************
 # *     ACCESSIBLE ELEMENT     *
@@ -25,10 +25,7 @@ def AccessibleElementView(request):
     if request.method == 'GET':
         accessible_elements = AccessibleElement.objects.all().order_by('_id')
         serializer = AccessibleElementSerializer(accessible_elements, many = True)
-        data = {
-            'accessible_elements': serializer.data
-        }
-        return JsonResponse(data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
     
     # Crea una nueva entrada en la tabla Accesible_Element si no hay ninguno con la misma información
     elif request.method == 'POST':
@@ -128,6 +125,24 @@ def DishTypeViewID(request, _id):
     if request.method == 'GET':
         serializer = DishTypeSerializer(item)
         return JsonResponse(serializer.data, safe = False)
+
+    # Se modifica la entrada de la tabla con igual ID si no existe otro elemento que tenga la misma informacón tras modificar la entrada
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = DishTypeSerializer(item)
+        
+        # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
+        already_in_db = DishType.objects.filter(_id = item_serializer.data['_id'])
+ 
+        if already_in_db:
+            return JsonResponse(already_in_db, safe = False)
+        else:
+            serializer = DishTypeSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+        
+        return HttpResponse(status = 400)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -140,27 +155,16 @@ def DishTypeViewID(request, _id):
 # *            DISH            *
 # ******************************
 
-def concatDishWithAccessibleElem(item):
-    accessibleElement = getAccessibleElementByID(item['_name'])
-    data = {
-        "_id": item['_id'],
-        "_type": item['_type'],
-        "_accessible_element": accessibleElement
-    }
-    return data
-
 @csrf_exempt
 def DishView(request):
     if request.method == 'GET':
         dishes = Dish.objects.all().order_by('_id')
         serializer = DishSerializer(dishes, many = True)
 
-        data = []
-
         for dish in serializer.data:
-            data.append(concatDishWithAccessibleElem(dish))
+            dish['_name'] = getAccessibleElementByID(dish['_name'])
 
-        return JsonResponse(data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -170,12 +174,14 @@ def DishView(request):
                 
         if already_in_db:
             serializer = DishSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        data = serializer.data
+        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        return JsonResponse(data, status = 201)
     
 @csrf_exempt
 def DishViewID(request, _id):
@@ -188,8 +194,8 @@ def DishViewID(request, _id):
 
     if request.method == 'GET':
         serializer = DishSerializer(item)
-        data = concatDishWithAccessibleElem(serializer.data)
-        return JsonResponse(data, safe = False)
+        serializer.data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -222,26 +228,16 @@ def DishViewID(request, _id):
 # *         CLASSROOM         *
 # *****************************
 
-def concatClassWithAccessibleElem(item):
-    accessibleElement = getAccessibleElementByID(item['_class_code'])
-    data = {
-        "_id": item['_id'],
-        "_accessible_element": accessibleElement
-    }
-    return data
-
 @csrf_exempt
 def ClassroomView(request):
     if request.method == 'GET':
         classrooms = Classroom.objects.all().order_by('_id')
         serializer = ClassroomSerializer(classrooms, many = True)
 
-        data = []
-
         for classroom in serializer.data:
-            data.append(concatClassWithAccessibleElem(classroom))
+            classroom['_class_code'] = getAccessibleElementByID(classroom['_class_code'])
 
-        return JsonResponse(data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -251,12 +247,14 @@ def ClassroomView(request):
                 
         if already_in_db:
             serializer = ClassroomSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
-        
-        return JsonResponse(serializer.errors, status = 400)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+        return JsonResponse(data, status = 201)
 
 @csrf_exempt
 def ClassroomViewID(request, _id):
@@ -269,7 +267,8 @@ def ClassroomViewID(request, _id):
 
     if request.method == 'GET':
         serializer = ClassroomSerializer(item)
-        data = concatClassWithAccessibleElem(serializer.data)
+        data = serializer.data
+        data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
         return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
@@ -283,14 +282,15 @@ def ClassroomViewID(request, _id):
  
         if already_in_db:
             serializer = ClassroomSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = ClassroomSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
+            serializer.save()
+        else: 
+            return HttpResponse(status = 400)
         
-        return HttpResponse(status = 400)
+        data = serializer.data
+        data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -305,6 +305,10 @@ def FeedbackView(request):
     if request.method == 'GET':
         feedbacks = Feedback.objects.all().order_by('_id')
         serializer = FeedbackSerializer(feedbacks, many = True)
+
+        for feedback in serializer.data:
+            feedback['_feedback'] = getAccessibleElementByID(feedback['_feedback'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
@@ -315,28 +319,18 @@ def FeedbackView(request):
                 
         if already_in_db:
             serializer = FeedbackSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
-        
-        return JsonResponse(serializer.errors, status = 400)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_feedback'] = getAccessibleElementByID(serializer.data['_feedback'])
+        return JsonResponse(data, status = 201)
     
 # ****************************
 # *           TASK           *
 # ****************************
-
-def concatTaskWithAccessibleElem(item):
-    accessibleElement = getAccessibleElementByID(item['_name'])
-    data = {
-        "_id": item['_id'],
-        "_due_date": item['_due_date'],
-        "_feedback": item['_feedback'],
-        "_type": item['_type'],
-        "_status": item['_status'],
-        "_accessible_element": accessibleElement
-    }
-    return data
 
 @csrf_exempt
 def TaskView(request):
@@ -344,31 +338,31 @@ def TaskView(request):
         tasks = Task.objects.all().order_by('_id')
         serializer = TaskSerializer(tasks, many = True)
 
-        data = []
-
+        # TODO -> concatenar feedback
         for task in serializer.data:
-            data.append(concatTaskWithAccessibleElem(task))
+            task['_name'] = getAccessibleElementByID(task['_name'])
+
         return JsonResponse(data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = TaskSerializer(data = data)
-        
 
         already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _auto_feedback = data['_auto_feedback'])
                 
         if 'feedback' in data:
             already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _auto_feedback = data['_auto_feedback'])
-     
-            
+
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
-        
-        return JsonResponse(serializer.errors, status = 400)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        return JsonResponse(data, status = 201)
     
 @csrf_exempt
 def TaskViewID(request, _id):
@@ -381,8 +375,10 @@ def TaskViewID(request, _id):
 
     if request.method == 'GET':
         serializer = TaskSerializer(item)
-        data = concatTaskWithAccessibleElem(serializer.data)
-        return JsonResponse(data, safe = False)
+        
+        data = serializer.data
+        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -391,14 +387,14 @@ def TaskViewID(request, _id):
         if not('_name' in data):
             data['_name'] = item_serializer.data['_name']
             
-        if not('_due_date' in data):
-            data['_due_date'] = item_serializer.data['_due_date']
-            
         if not('_feedback' in data):
             data['_feedback'] = item_serializer.data['_feedback']
         
         if not('_type' in data):
             data['_type'] = item_serializer.data['_type']
+
+        if not('_due_date' in data):
+            data['_due_date'] = item_serializer.data['_due_date']
         
         if not('_status' in data):
             data['_status'] = item_serializer.data['_status']
@@ -406,19 +402,20 @@ def TaskViewID(request, _id):
         if not('_auto_feedback' in data):
             data['_auto_feedback'] = item_serializer.data['_auto_feedback']
         
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _type = data['_type'], _status = data['_status'], _auto_feedback = data['_auto_feedback'])
+        already_in_db = Task.objects.filter(_name = data['_name'], _feedback = data['_feedback'], _type = data['_type'], _due_date = data['_due_date'], _status = data['_status'], _auto_feedback = data['_auto_feedback'])
  
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = TaskSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-        
-        return HttpResponse(status = 400)
-    
+            serializer.save()
+        else:
+            return HttpResponse(status = 400)
+
+        data = serializer.data
+        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        return JsonResponse(serializer.data, safe = False)
+
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
@@ -443,12 +440,12 @@ def KitchenOrderView(request):
                 
         if already_in_db:
             serializer = KitchenOrderSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        return JsonResponse(serializer.data, status = 201)
     
 @csrf_exempt
 def KitchenOrderViewID(request, _id):
@@ -486,12 +483,12 @@ def KitchenOrderDetailView(request):
                 
         if already_in_db:
             serializer = KitchenOrderDetailSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        return JsonResponse(serializer.data, status = 201)
 
 @csrf_exempt
 def KitchenOrderDetailViewID(request, _id):
@@ -526,14 +523,13 @@ def KitchenOrderDetailViewID(request, _id):
  
         if already_in_db:
             serializer = KitchenOrderDetailSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = KitchenOrderDetailSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
+            serializer.save()
+        else: 
+            return HttpResponse(status = 400)
         
-        return HttpResponse(status = 400)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -541,51 +537,38 @@ def KitchenOrderDetailViewID(request, _id):
 
 
 # *****************************
-# *           COLOR           *
+# *       MATERIAL TYPE       *
 # *****************************
 
 @csrf_exempt
-def ColorView(request):
+def MaterialTypeView(request):
     if request.method == 'GET':
-        colors = Color.objects.all().order_by('_id')
-        serializer = FeedbackSerializer(colors, many = True)
+        material_types = MaterialType.objects.all().order_by('_id')
+        serializer = MaterialTypeSerializer(material_types, many = True)
+
+        for material_type in serializer.data:
+            material_type['_item'] = getAccessibleElementByID(material_type['_item'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = ColorSerializer(data = data)
+        serializer = MaterialTypeSerializer(data = data)
         
-        already_in_db = Color.objects.filter(_feedback = data['_color'])
+        already_in_db = MaterialType.objects.filter(_item = data['_item'])
                 
         if already_in_db:
-            serializer = ColorSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
+            serializer = MaterialTypeSerializer(already_in_db[0])
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        return JsonResponse(serializer.data, status = 201)
 
 # **************************
 # *        MATERIAL        *
 # **************************
-def concatColorWithAccessibleElem(_id):
-    accessibleElement = getAccessibleElementByID(_id)
-    data = {
-        "_id": _id,
-        "_color": accessibleElement
-    }
-    return data
-
-def concatMaterialWithAccessibleElem(item):
-    accessibleElement = getAccessibleElementByID(item['_item'])
-    data = {
-        "_id": item['_id'],
-        "_item": accessibleElement,
-        "_color": concatColorWithAccessibleElem(item['_color']),
-        "_quantity": item['_quantity']
-    }
-    return data
 
 @csrf_exempt
 def MaterialView(request):
@@ -594,12 +577,10 @@ def MaterialView(request):
         materials = Material.objects.all().order_by('_id')
         serializer = MaterialSerializer(materials, many = True)
 
-        data = []
-
         for material in serializer.data:
-            data.append(concatMaterialWithAccessibleElem(material))
+            material['_color'] = getAccessibleElementByID(material['_color'])
 
-        return JsonResponse(data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
@@ -609,12 +590,14 @@ def MaterialView(request):
                 
         if already_in_db:
             serializer = KitchenOrderSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        data = serializer.data
+        data['_color'] = getAccessibleElementByID(serializer.data['_color'])
+        return JsonResponse(serializer.data, status = 201)
     
 @csrf_exempt
 def MaterialViewID(request, _id):
@@ -626,8 +609,9 @@ def MaterialViewID(request, _id):
     
     if request.method == 'GET':
         serializer = MaterialSerializer(item)
-        data = concatMaterialWithAccessibleElem(serializer.data)
-        return JsonResponse(serializer.data, safe = False)
+        data = serializer.data
+        data['_color'] = getAccessibleElementByID(serializer.data['_color'])
+        return JsonResponse(data, safe = False)
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -646,16 +630,15 @@ def MaterialViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialSerializer(already_in_db[0])
-            data = concatMaterialWithAccessibleElem(serializer.data)
-            return JsonResponse(data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = MaterialSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                data = concatMaterialWithAccessibleElem(serializer.data)
-                return JsonResponse(data)
+            serializer.save()
+        else: 
+            return HttpResponse(status = 400)
         
-        return HttpResponse(status = 400)
+        data = serializer.data
+        data['_color'] = getAccessibleElementByID(serializer.data['_color'])
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -681,12 +664,12 @@ def MaterialTaskView(request):
                 
         if already_in_db:
             serializer = MaterialTaskSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        return JsonResponse(serializer.data, status = 201)
     
 @csrf_exempt
 def MaterialTaskViewID(request, _id):
@@ -714,14 +697,13 @@ def MaterialTaskViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialTaskSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = MaterialSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
+            serializer.save()
+        else:
+            return HttpResponse(status = 400)
         
-        return HttpResponse(status = 400)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -747,12 +729,12 @@ def MaterialTaskDetailView(request):
                 
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, status = 201)
         elif serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status = 201)
+        else:
+            return JsonResponse(serializer.errors, status = 400)
         
-        return JsonResponse(serializer.errors, status = 400)
+        return JsonResponse(serializer.data, status = 201)
     
 @csrf_exempt
 def MaterialTaskDetailViewID(request, _id):
@@ -783,14 +765,13 @@ def MaterialTaskDetailViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = MaterialSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-        
-        return HttpResponse(status = 400)
+            serializer.save()
+        else:
+            return HttpResponse(status = 400)
+            
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()

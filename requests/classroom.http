@@ -7,19 +7,19 @@ GET http://localhost:8000/api/classroom
 POST http://localhost:8000/api/classroom
 
 {
-    "_class_code": "5"
+    "_class_code": "1"
 }
 
 ###
 
-GET http://localhost:8000/api/classroom/2
+GET http://localhost:8000/api/classroom/1
 
 ###
 
-PUT http://localhost:8000/api/classroom/2
+PUT http://localhost:8000/api/classroom/1
 
 {
-    "_class_code" : "16"
+    "_class_code" : "1"
 }
 
 ###

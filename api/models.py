@@ -156,37 +156,37 @@ class KitchenOrderDetail(models.Model):
         }
         return json_str
 
-class Color(models.Model):
+class MaterialType(models.Model):
     _id = models.AutoField(primary_key = True)
-    _color = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+    _item = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
 
     class Meta:
         _id = ['_id']
-        _color = ['_color']
+        _item = ['_item']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
-            "_color" : self._color
+            "_item" : self._item
         }
         return json_str
 
 class Material(models.Model):
     _id = models.AutoField(primary_key = True)
-    _item = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
-    _color = models.ForeignKey("Color", on_delete = models.CASCADE)
+    _type = models.ForeignKey("MaterialType", on_delete = models.CASCADE)
+    _color = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _quantity = models.IntegerField(default = 0)
 
     class Meta:
         _id = ['_id']
-        _item = ['_item']
+        _type = ['_type']
         _color = ['_color']
         _quantity = ['_quantity']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
-            "_item" : self._item,
+            "_type" : self._type,
             "_color" : self._color,
             "_quantity" : self._quantity
         }
