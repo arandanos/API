@@ -300,6 +300,14 @@ def ClassroomViewID(request, _id):
 # *         FEEDBACK         *
 # ****************************
 
+#· MÉTODOS AUXILIARES
+def getFeedbackByID(_id):
+    item = Feedback.objects.get(_id = _id)
+    serializer = FeedbackSerializer(item)
+    data = serializer.data
+    data['_feedback'] = getAccessibleElementByID(serializer.data['_feedback'])
+    return data
+
 @csrf_exempt
 def FeedbackView(request):
     if request.method == 'GET':
@@ -324,8 +332,7 @@ def FeedbackView(request):
         else:
             return JsonResponse(serializer.errors, status = 400)
 
-        data = serializer.data
-        data['_feedback'] = getAccessibleElementByID(serializer.data['_feedback'])
+        data = getFeedbackByID(serializer.data['_feedback'])
         return JsonResponse(data, status = 201)
     
 # ****************************
@@ -338,20 +345,20 @@ def TaskView(request):
         tasks = Task.objects.all().order_by('_id')
         serializer = TaskSerializer(tasks, many = True)
 
-        # TODO -> concatenar feedback
         for task in serializer.data:
             task['_name'] = getAccessibleElementByID(task['_name'])
+            task['_feedback'] = getFeedbackByID(task['_feedback'])
 
-        return JsonResponse(data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = TaskSerializer(data = data)
 
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _auto_feedback = data['_auto_feedback'])
+        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
                 
-        if 'feedback' in data:
-            already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'], _auto_feedback = data['_auto_feedback'])
+        if '_feedback' in data:
+            already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
 
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
@@ -362,6 +369,10 @@ def TaskView(request):
 
         data = serializer.data
         data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+
+        if '_feedback' in data:
+            data['_feedback'] = getFeedbackByID(serializer.data['_feedback'])
+
         return JsonResponse(data, status = 201)
     
 @csrf_exempt
@@ -414,6 +425,10 @@ def TaskViewID(request, _id):
 
         data = serializer.data
         data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+
+        if 'feedback' in data:
+            data['_feedback'] = getFeedbackByID(serializer.data['_feedback'])
+
         return JsonResponse(serializer.data, safe = False)
 
     elif request.method == 'DELETE':
@@ -770,7 +785,7 @@ def MaterialTaskDetailViewID(request, _id):
             serializer.save()
         else:
             return HttpResponse(status = 400)
-            
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'DELETE':

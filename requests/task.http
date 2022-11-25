@@ -8,8 +8,12 @@ POST http://localhost:8000/api/task
 
 {
     "_name" : "1",
+    "_feedback": "1",
     "_due_date": "2022-11-22",
-    "_type": "MATERIAL"
+    "_type": "MATERIAL",
+    "_status": "True",
+    "_auto_feedback": "True"
+
 
 }
 
