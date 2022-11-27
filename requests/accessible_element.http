@@ -7,7 +7,8 @@ GET http://localhost:8000/api/accessible_element
 POST http://localhost:8000/api/accessible_element
 
 {
-    "_text" : "COMANDA",
+    "_id": "12",
+    "_text" : "MUY BIEN!",
     "_pictogram": "https://api.arasaac.org/api/pictograms/4653?download=false"
 }
 

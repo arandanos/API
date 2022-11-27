@@ -366,7 +366,7 @@ def FeedbackView(request):
 def concatenateTask(data):
     data['_name'] = getAccessibleElementByID(data['_name'])
 
-    if '_feedback' in data:
+    if '_feedback' in data and not data['_feedback'] == None:
         data['_feedback'] = getFeedbackByID(data['_feedback'])
 
     return data
@@ -394,7 +394,7 @@ def TaskView(request):
 
         already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
                 
-        if '_feedback' in data:
+        if '_feedback' in data and not data['_feedback'] == None:
             already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
 
         if already_in_db:
