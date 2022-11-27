@@ -11,7 +11,7 @@ from .serializers import  *
 # ******************************
 
 #· MÉTODOS AUXILIARES
-# Devuelve el elemente de la base de datos que corresponda con el id
+# Devuelve el elemento de la base de datos que corresponda con el id
 def getAccessibleElementByID(_id):
     item = AccessibleElement.objects.get(_id = _id)
     item_serializer = AccessibleElementSerializer(item)
@@ -155,6 +155,14 @@ def DishTypeViewID(request, _id):
 # *            DISH            *
 # ******************************
 
+#· MÉTODOS AUXILIARES
+def getDishByID(_id):
+    item = Dish.objects.get(_id = _id)
+    serializer = DishSerializer(item)
+    data = serializer.data
+    data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+    return data
+
 @csrf_exempt
 def DishView(request):
     if request.method == 'GET':
@@ -211,14 +219,15 @@ def DishViewID(request, _id):
  
         if already_in_db:
             serializer = DishSerializer(already_in_db[0])
-            return JsonResponse(serializer.data, safe = False)
-        else:
+        elif serializer.is_valid():
             serializer = DishSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
+            serializer.save()
+        else:
+            return HttpResponse(status = 400)
         
-        return HttpResponse(status = 400)
+        data = serializer.data
+        data['_name'] = getAccessibleElementByID(data['_name'])
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -227,6 +236,14 @@ def DishViewID(request, _id):
 # *****************************
 # *         CLASSROOM         *
 # *****************************
+
+#· MÉTODOS AUXILIARES
+def getClassroomByID(_id):
+    item = Classroom.objects.get(_id = _id)
+    serializer = ClassroomSerializer(item)
+    data = serializer.data
+    data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+    return data
 
 @csrf_exempt
 def ClassroomView(request):
@@ -339,6 +356,12 @@ def FeedbackView(request):
 # *           TASK           *
 # ****************************
 
+#· MÉTODOS AUXILIARES
+def getTaskByID(_id):
+    item = Task.objects.get(_id = _id)
+    item_serializer = TaskSerializer(item)
+    return item_serializer.data
+
 @csrf_exempt
 def TaskView(request):
     if request.method == 'GET':
@@ -347,7 +370,8 @@ def TaskView(request):
 
         for task in serializer.data:
             task['_name'] = getAccessibleElementByID(task['_name'])
-            task['_feedback'] = getFeedbackByID(task['_feedback'])
+            if 'feedback' in task:
+                task['_feedback'] = getFeedbackByID(task['_feedback'])
 
         return JsonResponse(serializer.data, safe = False)
     
@@ -389,6 +413,9 @@ def TaskViewID(request, _id):
         
         data = serializer.data
         data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        if 'feedback' in data:
+            data['_feedback'] = getFeedbackByID(serializer.data['_feedback'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'PUT':
@@ -439,12 +466,22 @@ def TaskViewID(request, _id):
 # *      KITCHEN ORDER      *
 # ***************************
 
+#· MÉTODOS AUXILIARES
+def getKitchenOrderByID(_id):
+    item = KitchenOrder.objects.get(_id = _id)
+    item_serializer = KitchenOrderSerializer(item)
+    return item_serializer.data
+
 @csrf_exempt
 def KitchenOrderView(request):
     
     if request.method == 'GET':
         kitchen_orders = KitchenOrder.objects.all().order_by('_id')
         serializer = KitchenOrderSerializer(kitchen_orders, many = True)
+
+        for kitchen_order in serializer.data:
+            kitchen_order['_task'] = getTaskByID(kitchen_order['_task'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
@@ -459,8 +496,11 @@ def KitchenOrderView(request):
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_task'] = getTaskByID(data['_task'])
         
-        return JsonResponse(serializer.data, status = 201)
+        return JsonResponse(data, status = 201)
     
 @csrf_exempt
 def KitchenOrderViewID(request, _id):
@@ -471,8 +511,9 @@ def KitchenOrderViewID(request, _id):
         raise Http404('Not found')
     
     if request.method == 'GET':
-        serializer = KitchenOrderSerializer(item)
-        return JsonResponse(serializer.data, safe = False)
+        data = KitchenOrderSerializer(item).data
+        data['_task'] = getTaskByID(data['_task'])
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -488,6 +529,12 @@ def KitchenOrderDetailView(request):
     if request.method == 'GET':
         kitchen_orders_deatils = KitchenOrderDetail.objects.all().order_by('_id')
         serializer = KitchenOrderDetailSerializer(kitchen_orders_deatils, many = True)
+
+        for kitchen_order_detail in kitchen_orders_deatils:
+            kitchen_order_detail['_classroom'] = getClassroomByID(kitchen_order_detail['_classroom'])
+            kitchen_order_detail['_dish'] = getClassroomByID(kitchen_order_detail['_dish'])
+            kitchen_order_detail['_kitchen_order'] = getClassroomByID(kitchen_order_detail['_kitchen_order'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
@@ -502,8 +549,13 @@ def KitchenOrderDetailView(request):
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_classroom'] = getClassroomByID(data['_classroom'])
+        data['_dish'] = getClassroomByID(data['_dish'])
+        data['_kitchen_order'] = getClassroomByID(data['_kitchen_order'])
         
-        return JsonResponse(serializer.data, status = 201)
+        return JsonResponse(data, status = 201)
 
 @csrf_exempt
 def KitchenOrderDetailViewID(request, _id):
@@ -515,8 +567,11 @@ def KitchenOrderDetailViewID(request, _id):
         raise Http404('Not found')
 
     if request.method == 'GET':
-        serializer = KitchenOrderDetailSerializer(item)
-        return JsonResponse(serializer.data, safe = False)
+        data = KitchenOrderDetailSerializer(item).data
+        data['_classroom'] = getClassroomByID(data['_classroom'])
+        data['_dish'] = getClassroomByID(data['_dish'])
+        data['_kitchen_order'] = getClassroomByID(data['_kitchen_order'])
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
@@ -544,7 +599,12 @@ def KitchenOrderDetailViewID(request, _id):
         else: 
             return HttpResponse(status = 400)
         
-        return JsonResponse(serializer.data, safe = False)
+        data = serializer.data
+        data['_classroom'] = getClassroomByID(data['_classroom'])
+        data['_dish'] = getClassroomByID(data['_dish'])
+        data['_kitchen_order'] = getClassroomByID(data['_kitchen_order'])
+
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -554,6 +614,12 @@ def KitchenOrderDetailViewID(request, _id):
 # *****************************
 # *       MATERIAL TYPE       *
 # *****************************
+
+#· MÉTODOS AUXILIARES
+def getMaterialTypeOrderByID(_id):
+    item = MaterialType.objects.get(_id = _id)
+    item_serializer = MaterialTypeSerializer(item)
+    return item_serializer.data
 
 @csrf_exempt
 def MaterialTypeView(request):
@@ -578,12 +644,21 @@ def MaterialTypeView(request):
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
-        
-        return JsonResponse(serializer.data, status = 201)
+
+        data = serializer.data
+        data['_item'] = getAccessibleElementByID(data['_item'])
+
+        return JsonResponse(data, status = 201)
 
 # **************************
 # *        MATERIAL        *
 # **************************
+
+#· MÉTODOS AUXILIARES
+def getMaterialByID(_id):
+    item = Material.objects.get(_id = _id)
+    item_serializer = MaterialSerializer(item)
+    return item_serializer.data
 
 @csrf_exempt
 def MaterialView(request):
@@ -594,6 +669,7 @@ def MaterialView(request):
 
         for material in serializer.data:
             material['_color'] = getAccessibleElementByID(material['_color'])
+            material['_type'] = getAccessibleElementByID(material['_type'])
 
         return JsonResponse(serializer.data, safe = False)
     
@@ -612,6 +688,7 @@ def MaterialView(request):
         
         data = serializer.data
         data['_color'] = getAccessibleElementByID(serializer.data['_color'])
+        data['_type'] = getAccessibleElementByID(serializer.data['_type'])
         return JsonResponse(serializer.data, status = 201)
     
 @csrf_exempt
@@ -626,6 +703,7 @@ def MaterialViewID(request, _id):
         serializer = MaterialSerializer(item)
         data = serializer.data
         data['_color'] = getAccessibleElementByID(serializer.data['_color'])
+        data['_type'] = getAccessibleElementByID(serializer.data['_type'])
         return JsonResponse(data, safe = False)
 
     elif request.method == 'PUT':
@@ -653,6 +731,7 @@ def MaterialViewID(request, _id):
         
         data = serializer.data
         data['_color'] = getAccessibleElementByID(serializer.data['_color'])
+        data['_type'] = getAccessibleElementByID(serializer.data['_type'])
         return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
@@ -663,12 +742,23 @@ def MaterialViewID(request, _id):
 # *      MATERIAL TASK      *
 # ***************************
 
+#· MÉTODOS AUXILIARES
+def getMaterialTaskByID(_id):
+    item = MaterialTask.objects.get(_id = _id)
+    item_serializer = MaterialTaskSerializer(item)
+    return item_serializer.data
+
 @csrf_exempt
 def MaterialTaskView(request):
     
     if request.method == 'GET':
         materials = MaterialTask.objects.all().order_by('_id')
         serializer = MaterialTaskSerializer(materials, many = True)
+
+        for material in materials:
+            material['_task'] = getTaskByID(material['_task'])
+            material['_classroom'] = getClassroomByID(material['_classroom'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
@@ -683,8 +773,12 @@ def MaterialTaskView(request):
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_task'] = getTaskByID(data['_task'])
+        data['_classroom'] = getClassroomByID(data['_classroom'])
         
-        return JsonResponse(serializer.data, status = 201)
+        return JsonResponse(data, status = 201)
     
 @csrf_exempt
 def MaterialTaskViewID(request, _id):
@@ -695,7 +789,9 @@ def MaterialTaskViewID(request, _id):
         raise Http404('Not found')
     
     if request.method == 'GET':
-        serializer = MaterialTaskSerializer(item)
+        data = MaterialTaskSerializer(item).data
+        data['_task'] = getTaskByID(data['_task'])
+        data['_classroom'] = getClassroomByID(data['_classroom'])
         return JsonResponse(serializer.data, safe = False)
 
     elif request.method == 'PUT':
@@ -717,8 +813,12 @@ def MaterialTaskViewID(request, _id):
             serializer.save()
         else:
             return HttpResponse(status = 400)
+
+        data = serializer.data
+        data['_task'] = getTaskByID(data['_task'])
+        data['_classroom'] = getClassroomByID(data['_classroom'])
         
-        return JsonResponse(serializer.data, safe = False)
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
@@ -734,6 +834,11 @@ def MaterialTaskDetailView(request):
     if request.method == 'GET':
         materials = MaterialTaskDetail.objects.all().order_by('_id')
         serializer = MaterialTaskDetailSerializer(materials, many = True)
+
+        for material_task_detail in serializer.data:
+            material_task_detail['_material_task'] = getMaterialTaskByID(material_task_detail['_material_task'])
+            material_task_detail['_material'] = getMaterialTaskByID(material_task_detail['_material'])
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
@@ -748,8 +853,12 @@ def MaterialTaskDetailView(request):
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
+
+        data = serializer.data
+        data['_material_task'] = getMaterialTaskByID(data['_material_task'])
+        data['_material'] = getMaterialTaskByID(data['_material'])            
         
-        return JsonResponse(serializer.data, status = 201)
+        return JsonResponse(data, status = 201)
     
 @csrf_exempt
 def MaterialTaskDetailViewID(request, _id):
@@ -786,7 +895,10 @@ def MaterialTaskDetailViewID(request, _id):
         else:
             return HttpResponse(status = 400)
 
-        return JsonResponse(serializer.data, safe = False)
+        data = serializer.data
+        data['_material_task'] = getMaterialTaskByID(data['_material_task'])
+        data['_material'] = getMaterialTaskByID(data['_material'])   
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()
