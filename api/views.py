@@ -156,11 +156,14 @@ def DishTypeViewID(request, _id):
 # ******************************
 
 #· MÉTODOS AUXILIARES
+def concatenateDish(data):
+    data['_name'] = getAccessibleElementByID(data['_name'])
+    return data
+
 def getDishByID(_id):
     item = Dish.objects.get(_id = _id)
     serializer = DishSerializer(item)
-    data = serializer.data
-    data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+    data = concatenateDish(serializer.data)
     return data
 
 @csrf_exempt
@@ -170,7 +173,7 @@ def DishView(request):
         serializer = DishSerializer(dishes, many = True)
 
         for dish in serializer.data:
-            dish['_name'] = getAccessibleElementByID(dish['_name'])
+            dish = concatenateDish(dish)
 
         return JsonResponse(serializer.data, safe = False)
     
@@ -187,8 +190,7 @@ def DishView(request):
         else:
             return JsonResponse(serializer.errors, status = 400)
         
-        data = serializer.data
-        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
+        data = concatenateDish(serializer.data)
         return JsonResponse(data, status = 201)
     
 @csrf_exempt
@@ -219,14 +221,14 @@ def DishViewID(request, _id):
  
         if already_in_db:
             serializer = DishSerializer(already_in_db[0])
-        elif serializer.is_valid():
-            serializer = DishSerializer(item, data = data)
-            serializer.save()
         else:
-            return HttpResponse(status = 400)
+            serializer = DishSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
         
-        data = serializer.data
-        data['_name'] = getAccessibleElementByID(data['_name'])
+        data = data = concatenateDish(serializer.data)
         return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
@@ -238,11 +240,14 @@ def DishViewID(request, _id):
 # *****************************
 
 #· MÉTODOS AUXILIARES
+def concatenateClassroom(data):
+    data['_class_code'] = getAccessibleElementByID(data['_class_code'])
+    return data
+
 def getClassroomByID(_id):
     item = Classroom.objects.get(_id = _id)
     serializer = ClassroomSerializer(item)
-    data = serializer.data
-    data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+    data = concatenateClassroom(serializer.data)
     return data
 
 @csrf_exempt
@@ -252,7 +257,7 @@ def ClassroomView(request):
         serializer = ClassroomSerializer(classrooms, many = True)
 
         for classroom in serializer.data:
-            classroom['_class_code'] = getAccessibleElementByID(classroom['_class_code'])
+            classroom = concatenateClassroom(classroom)
 
         return JsonResponse(serializer.data, safe = False)
     
@@ -269,8 +274,7 @@ def ClassroomView(request):
         else:
             return JsonResponse(serializer.errors, status = 400)
 
-        data = serializer.data
-        data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+        data = concatenateClassroom(serializer.data)
         return JsonResponse(data, status = 201)
 
 @csrf_exempt
@@ -299,14 +303,14 @@ def ClassroomViewID(request, _id):
  
         if already_in_db:
             serializer = ClassroomSerializer(already_in_db[0])
-        elif serializer.is_valid():
+        else:
             serializer = ClassroomSerializer(item, data = data)
-            serializer.save()
-        else: 
-            return HttpResponse(status = 400)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
         
-        data = serializer.data
-        data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+        data = concatenateClassroom(serializer.data)
         return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
@@ -444,11 +448,12 @@ def TaskViewID(request, _id):
  
         if already_in_db:
             serializer = TaskSerializer(already_in_db[0])
-        elif serializer.is_valid():
-            serializer = TaskSerializer(item, data = data)
-            serializer.save()
         else:
-            return HttpResponse(status = 400)
+            serializer = TaskSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
 
         data = serializer.data
         data['_name'] = getAccessibleElementByID(serializer.data['_name'])
@@ -593,11 +598,12 @@ def KitchenOrderDetailViewID(request, _id):
  
         if already_in_db:
             serializer = KitchenOrderDetailSerializer(already_in_db[0])
-        elif serializer.is_valid():
+        else:
             serializer = KitchenOrderDetailSerializer(item, data = data)
-            serializer.save()
-        else: 
-            return HttpResponse(status = 400)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
         
         data = serializer.data
         data['_classroom'] = getClassroomByID(data['_classroom'])
@@ -723,11 +729,12 @@ def MaterialViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialSerializer(already_in_db[0])
-        elif serializer.is_valid():
+        else:
             serializer = MaterialSerializer(item, data = data)
-            serializer.save()
-        else: 
-            return HttpResponse(status = 400)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
         
         data = serializer.data
         data['_color'] = getAccessibleElementByID(serializer.data['_color'])
@@ -808,11 +815,12 @@ def MaterialTaskViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialTaskSerializer(already_in_db[0])
-        elif serializer.is_valid():
-            serializer = MaterialSerializer(item, data = data)
-            serializer.save()
         else:
-            return HttpResponse(status = 400)
+            serializer = MaterialTaskSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
 
         data = serializer.data
         data['_task'] = getTaskByID(data['_task'])
@@ -889,11 +897,12 @@ def MaterialTaskDetailViewID(request, _id):
  
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
-        elif serializer.is_valid():
-            serializer = MaterialSerializer(item, data = data)
-            serializer.save()
         else:
-            return HttpResponse(status = 400)
+            serializer = MaterialTaskDetailSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
 
         data = serializer.data
         data['_material_task'] = getMaterialTaskByID(data['_material_task'])

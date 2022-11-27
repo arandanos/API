@@ -13,7 +13,7 @@ POST http://localhost:8000/api/accessible_element
 
 ### * http://localhost:8000/api/accesible_element/<_id>
 
-GET http://localhost:8000/api/accessible_element/1
+GET http://localhost:8000/api/accessible_element/2
 
 ###
 
