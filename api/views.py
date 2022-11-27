@@ -683,7 +683,7 @@ def MaterialView(request):
         data = JSONParser().parse(request)
         serializer = MaterialSerializer(data = data)
         
-        already_in_db = Material.objects.filter(_item = data['_item'], _color = data['_color'])
+        already_in_db = Material.objects.filter(_type = data['_type'], _color = data['_color'], _quantity = data['_quantity'])
                 
         if already_in_db:
             serializer = KitchenOrderSerializer(already_in_db[0])
