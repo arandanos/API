@@ -7,8 +7,8 @@ GET http://localhost:8000/api/dish
 POST http://localhost:8000/api/dish
 
 {
-    "_name" : "1",
-    "_type": "CARNE"
+    "_name" : "6",
+    "_type": "MENU"
 }
 
 ### * http://localhost:8000/api/dish/<_id>

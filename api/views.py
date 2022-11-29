@@ -240,7 +240,7 @@ def DishViewID(request, _id):
 
 #· MÉTODOS AUXILIARES
 def concatenateClassroom(data):
-    data['_class_code'] = getAccessibleElementByID(data['_class_code'])
+    data['_name'] = getAccessibleElementByID(data['_name'])
     return data
 
 def getClassroomByID(_id):
@@ -264,7 +264,7 @@ def ClassroomView(request):
         data = JSONParser().parse(request)
         serializer = ClassroomSerializer(data = data)
         
-        already_in_db = Classroom.objects.filter(_class_code = data['_class_code'])
+        already_in_db = Classroom.objects.filter(_name = data['_name'])
                 
         if already_in_db:
             serializer = ClassroomSerializer(already_in_db[0])
@@ -288,17 +288,17 @@ def ClassroomViewID(request, _id):
     if request.method == 'GET':
         serializer = ClassroomSerializer(item)
         data = serializer.data
-        data['_class_code'] = getAccessibleElementByID(serializer.data['_class_code'])
+        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
         return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
         item_serializer = ClassroomSerializer(item)
         
-        if not('_class_code' in data):
-            data['_class_code'] = item_serializer.data['_class_code']
+        if not('_name' in data):
+            data['_name'] = item_serializer.data['_name']
         
-        already_in_db = Classroom.objects.filter(_class_code = data['_class_code'])
+        already_in_db = Classroom.objects.filter(_name = data['_name'])
  
         if already_in_db:
             serializer = ClassroomSerializer(already_in_db[0])

@@ -20,7 +20,7 @@ class DishSerializer(serializers.ModelSerializer):
 class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classroom
-        fields = ['_id', '_class_code']
+        fields = ['_id', '_name']
 
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:

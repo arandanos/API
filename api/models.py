@@ -56,16 +56,16 @@ class Dish(models.Model):
 
 class Classroom(models.Model):
     _id = models.AutoField(primary_key = True)
-    _class_code = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     
     class Meta:
         _id = ['_id']
-        _class_code = ['_class_code']
+        _name = ['_name']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
-            "_class_code" : self._class_code
+            "_name" : self._name
         }
         return json_str
 
