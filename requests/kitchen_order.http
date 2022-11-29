@@ -7,7 +7,8 @@ GET http://localhost:8000/api/kitchen_order
 POST http://localhost:8000/api/kitchen_order
 
 {
-    "_id" : "1"
+    "_task" : "12",
+    "_auto_calc": "True"
 }
 
 ### * http://localhost:8000/api/kitchen_order/<_id>

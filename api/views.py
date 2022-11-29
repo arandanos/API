@@ -539,7 +539,7 @@ def KitchenOrderDetailView(request):
         kitchen_orders_deatils = KitchenOrderDetail.objects.all().order_by('_id')
         serializer = KitchenOrderDetailSerializer(kitchen_orders_deatils, many = True)
 
-        for kitchen_order_detail in kitchen_orders_deatils:
+        for kitchen_order_detail in serializer.data:
             kitchen_order_detail = concatenateKitchenOrderDetail(kitchen_order_detail)
 
         return JsonResponse(serializer.data, safe = False)
@@ -762,7 +762,7 @@ def MaterialTaskView(request):
         materials = MaterialTask.objects.all().order_by('_id')
         serializer = MaterialTaskSerializer(materials, many = True)
 
-        for material in materials:
+        for material in serializer.data:
             material = concatenateMaterialTask(material)
 
         return JsonResponse(serializer.data, safe = False)
