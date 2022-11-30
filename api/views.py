@@ -3,8 +3,21 @@ from django.shortcuts import render, HttpResponseRedirect, Http404
 from rest_framework.parsers import JSONParser
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import base64
 from .models import *
 from .serializers import  *
+from django.conf import settings
+from django.http import FileResponse
+import validators
+
+# ******************************
+# *           IMAGE            *
+# ******************************
+@csrf_exempt
+def ImageViewID(request, _image):
+    filename = settings.SAVE_IMAGE_URL + _image
+    return FileResponse(open(filename, 'rb'), as_attachment=False)
+
 
 # ******************************
 # *     ACCESSIBLE ELEMENT     *
@@ -16,6 +29,12 @@ def getAccessibleElementByID(_id):
     item = AccessibleElement.objects.get(_id = _id)
     serializer = AccessibleElementSerializer(item)
     return serializer.data
+
+def getNewID():
+    accessible_elements = AccessibleElement.objects.all().order_by('_id')
+    data = AccessibleElementSerializer(accessible_elements, many = True).data
+    new_id = data[len(data) - 1]['_id'] + 1
+    return new_id
     
 # Peticiones GET y POST simples
 @csrf_exempt
@@ -29,6 +48,15 @@ def AccessibleElementView(request):
     # Crea una nueva entrada en la tabla Accesible_Element si no hay ninguno con la misma información
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+
+        if not validators.url(data['_pictogram']):
+            encode_data = base64.b64decode(data['_pictogram'])
+            data['_pictogram'] = str(getNewID()) + '.jpg'
+            filename = settings.SAVE_IMAGE_URL + data['_pictogram']
+
+            with open(filename, 'wb') as f:
+                f.write(encode_data)
+
         serializer = AccessibleElementSerializer(data = data)
         
         already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
