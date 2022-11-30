@@ -625,6 +625,23 @@ def KitchenOrderDetailViewID(request, _id):
         item.delete()
         return HttpResponse(status = 204)
 
+@csrf_exempt
+def KitchenOrderDetailViewClassOrder(request, _classroom, _kitchen_order):
+
+    try: 
+        item = KitchenOrderDetail.objects.filter(_classroom_id = _classroom, _kitchen_order_id = _kitchen_order).order_by('_id')
+
+    except KitchenOrderDetail.DoesNotExist:
+        raise Http404('Not found')
+
+    if request.method == 'GET':
+        serializer = KitchenOrderDetailSerializer(item, many = True)
+
+        for kitchen_order_detail in serializer.data:
+            kitchen_order_detail = concatenateKitchenOrderDetail(kitchen_order_detail)
+
+        return JsonResponse(serializer.data, safe = False)
+
 
 # *****************************
 # *       MATERIAL TYPE       *
