@@ -10,6 +10,18 @@ from django.conf import settings
 import validators
 
 # ******************************
+# *           IMAGE            *
+# ******************************
+@csrf_exempt
+def ImageViewID(request, _image):
+    filename = settings.MEDIA_URL + _image + '.jpg'
+    context = {
+        "image": filename
+    }
+    return render(request, 'image.html', context)
+
+
+# ******************************
 # *     ACCESSIBLE ELEMENT     *
 # ******************************
 
@@ -24,7 +36,6 @@ def getNewID():
     accessible_elements = AccessibleElement.objects.all().order_by('_id')
     data = AccessibleElementSerializer(accessible_elements, many = True).data
     new_id = data[len(data) - 1]['_id'] + 1
-
     return new_id
     
 # Peticiones GET y POST simples
@@ -42,7 +53,7 @@ def AccessibleElementView(request):
 
         if not validators.url(data['_pictogram']):
             encode_data = base64.b64decode(data['_pictogram'])
-            data['_pictogram'] = str(getNewID()) + '.jpeg'
+            data['_pictogram'] = str(getNewID()) + '.jpg'
             filename = settings.SAVE_IMAGE_URL + data['_pictogram']
 
             with open(filename, 'wb') as f:

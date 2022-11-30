@@ -42,5 +42,6 @@ urlpatterns = [
     path('api/material_task', MaterialTaskView),
     path('api/material_task/<_id>', MaterialTaskViewID),
     path('api/material_task_detail', MaterialTaskDetailView),
-    path('api/material_task_detail/<_id>', MaterialTaskDetailViewID)
+    path('api/material_task_detail/<_id>', MaterialTaskDetailViewID),
+    path('api/image/<_image>', ImageViewID)
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
