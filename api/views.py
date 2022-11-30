@@ -7,6 +7,7 @@ import base64
 from .models import *
 from .serializers import  *
 from django.conf import settings
+from django.http import FileResponse
 import validators
 
 # ******************************
@@ -14,11 +15,8 @@ import validators
 # ******************************
 @csrf_exempt
 def ImageViewID(request, _image):
-    filename = settings.MEDIA_URL + _image + '.jpg'
-    context = {
-        "image": filename
-    }
-    return render(request, 'image.html', context)
+    filename = settings.SAVE_IMAGE_URL + _image
+    return FileResponse(open(filename, 'rb'), as_attachment=False)
 
 
 # ******************************
