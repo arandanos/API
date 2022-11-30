@@ -134,3 +134,7 @@ if os.environ.get('CORS_WHITELIST'):
     CORS_ORIGIN_WHITELIST = os.environ.get('CORS_WHITELIST').split(',')
 elif DEBUG:
     CORS_ORIGIN_ALLOW_ALL = True
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
+
+MEDIA_URL = '/media/'
