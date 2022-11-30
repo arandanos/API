@@ -16,5 +16,8 @@ POST http://localhost:8000/api/kitchen_order
 GET http://localhost:8000/api/kitchen_order/1
 
 ###
+GET http://localhost:8000/api/material_task/task/5
+
+###
 
 DELETE http://localhost:8000/api/kitchen_order/2

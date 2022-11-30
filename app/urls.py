@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/task/<_id>', TaskViewID),
     path('api/kitchen_order', KitchenOrderView),
     path('api/kitchen_order/<_id>', KitchenOrderViewID),
+    path('api/kitchen_order/task/<_id>', KitchenOrderViewTaskID),
     path('api/kitchen_order_detail', KitchenOrderDetailView),
     path('api/kitchen_order_detail/<_id>', KitchenOrderDetailViewID),
     path('api/material_type', MaterialTypeView),
@@ -39,6 +40,7 @@ urlpatterns = [
     path('api/material/<_id>', MaterialViewID),
     path('api/material_task', MaterialTaskView),
     path('api/material_task/<_id>', MaterialTaskViewID),
+    path('api/material_task/task/<_id>', MaterialTaskViewTaskID),
     path('api/material_task_detail', MaterialTaskDetailView),
     path('api/material_task_detail/<_id>', MaterialTaskDetailViewID)
 ]

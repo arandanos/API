@@ -521,6 +521,23 @@ def KitchenOrderViewID(request, _id):
         item.delete()
         return HttpResponse(status = 204)
 
+@csrf_exempt
+def KitchenOrderViewTaskID(request, _id):
+
+    try: 
+        item = KitchenOrder.objects.get(_task_id = _id)
+    except AccessibleElement.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = KitchenOrderSerializer(item)
+        data = concatenateKitchenOrder(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+
 # ********************************
 # *     KITCHEN ORDER DETAIL     *
 # ********************************
@@ -788,6 +805,47 @@ def MaterialTaskViewID(request, _id):
 
     try: 
         item = MaterialTask.objects.get(_id = _id)
+    except MaterialTask.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = MaterialTaskSerializer(item)
+        data = concatenateMaterialTask(serializer.data)
+        return JsonResponse(data, safe = False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = MaterialTaskSerializer(item)
+        
+        if not('_task' in data):
+            data['_task'] = item_serializer.data['_task']
+
+        if not('_classroom' in data):
+            data['_classroom'] = item_serializer.data['_classroom']
+        
+        already_in_db = MaterialTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+ 
+        if already_in_db:
+            serializer = MaterialTaskSerializer(already_in_db[0])
+        else:
+            serializer = MaterialTaskSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
+
+        data = concatenateMaterialTask(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+
+@csrf_exempt
+def MaterialTaskViewTaskID(request, _id):
+
+    try: 
+        item = MaterialTask.objects.get(_task_id = _id)
     except MaterialTask.DoesNotExist:
         raise Http404('Not found')
     
