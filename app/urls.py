@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/kitchen_order_detail/<_id>', KitchenOrderDetailViewID),
     path('api/kitchen_order_detail/<_classroom>/<_kitchen_order>', KitchenOrderDetailViewClassOrder),
     path('api/material_type', MaterialTypeView),
+    path('api/material_type/<_id>', MaterialTypeViewID),
     path('api/material', MaterialView),
     path('api/material/<_id>', MaterialViewID),
     path('api/material_task', MaterialTaskView),

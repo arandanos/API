@@ -677,7 +677,7 @@ def KitchenOrderDetailViewClassOrder(request, _classroom, _kitchen_order):
 
 #· MÉTODOS AUXILIARES
 def concatenateMaterialType(data):
-    data['_item'] = getAccessibleElementByID(data['_item'])
+    data['_name'] = getAccessibleElementByID(data['_name'])
     return data
 
 def getMaterialTypeByID(_id):
@@ -701,7 +701,7 @@ def MaterialTypeView(request):
         data = JSONParser().parse(request)
         serializer = MaterialTypeSerializer(data = data)
         
-        already_in_db = MaterialType.objects.filter(_item = data['_item'])
+        already_in_db = MaterialType.objects.filter(_name = data['_name'])
                 
         if already_in_db:
             serializer = MaterialTypeSerializer(already_in_db[0])
@@ -712,6 +712,23 @@ def MaterialTypeView(request):
 
         data = concatenateMaterialType(serializer.data)
         return JsonResponse(data, status = 201)
+
+@csrf_exempt
+def MaterialTypeViewID(request, _id):
+
+    try: 
+        item = MaterialType.objects.get(_id = _id)
+    except MaterialType.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = MaterialTypeSerializer(item)
+        data = concatenateMaterialType(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
 
 # **************************
 # *        MATERIAL        *
@@ -774,8 +791,8 @@ def MaterialViewID(request, _id):
         data = JSONParser().parse(request)
         item_serializer = MaterialSerializer(item)
         
-        if not('_item' in data):
-            data['_item'] = item_serializer.data['_item']
+        if not('_name' in data):
+            data['_name'] = item_serializer.data['_name']
 
         if not('_color' in data):
             data['_color'] = item_serializer.data['_color']
@@ -783,7 +800,7 @@ def MaterialViewID(request, _id):
         if not('_quantity' in data):
             data['_quantity'] = item_serializer.data['_quantity']
         
-        already_in_db = Material.objects.filter(_item = data['_item'], _color = data['_color'], _quantity = data['_quantity'])
+        already_in_db = Material.objects.filter(_name = data['_name'], _color = data['_color'], _quantity = data['_quantity'])
  
         if already_in_db:
             serializer = MaterialSerializer(already_in_db[0])
