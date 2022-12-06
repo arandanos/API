@@ -19,15 +19,19 @@ GET http://localhost:8000/api/material
 
 ###
 
-GET http://localhost:8000/api/material/4
+GET http://localhost:8000/api/material/11
+
+###
+
+GET http://localhost:8000/api/material/type/4
 
 ###
 
 POST http://localhost:8000/api/material
 
 {
-    "_color" : "17",
-    "_type": "4",
+    "_color" : "14",
+    "_type": "5",
     "_quantity": "9"
 }
 

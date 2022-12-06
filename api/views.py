@@ -818,6 +818,18 @@ def MaterialViewID(request, _id):
         item.delete()
         return HttpResponse(status = 204)
 
+@csrf_exempt
+def MaterialViewTypeID(request, _id):
+
+    if request.method == 'GET':
+        materials = Material.objects.filter(_type = _id)
+        serializer = MaterialSerializer(materials, many = True)
+
+        for material in serializer.data:
+            material = concatenateMaterial(material)
+
+        return JsonResponse(serializer.data, safe = False)
+
 # ***************************
 # *      MATERIAL TASK      *
 # ***************************

@@ -42,6 +42,7 @@ urlpatterns = [
     path('api/material_type/<_id>', MaterialTypeViewID),
     path('api/material', MaterialView),
     path('api/material/<_id>', MaterialViewID),
+    path('api/material/type/<_id>', MaterialViewTypeID),
     path('api/material_task', MaterialTaskView),
     path('api/material_task/<_id>', MaterialTaskViewID),
     path('api/material_task/task/<_id>', MaterialTaskViewTaskID),
