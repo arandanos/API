@@ -563,10 +563,8 @@ def KitchenOrderViewTaskID(request, _id):
         serializer = KitchenOrderSerializer(item)
         data = concatenateKitchenOrder(serializer.data)
         return JsonResponse(data, safe = False)
-    
-    elif request.method == 'DELETE':
-        item.delete()
-        return HttpResponse(status = 204)
+
+    return HttpResponse(status = 404)
 
 # ********************************
 # *     KITCHEN ORDER DETAIL     *
@@ -671,6 +669,8 @@ def KitchenOrderDetailViewClassOrder(request, _classroom, _kitchen_order):
             kitchen_order_detail = concatenateKitchenOrderDetail(kitchen_order_detail)
 
         return JsonResponse(serializer.data, safe = False)
+
+    return HttpResponse(status = 404)
 
 
 # *****************************
@@ -930,33 +930,7 @@ def MaterialTaskViewTaskID(request, _id):
         data = concatenateMaterialTask(serializer.data)
         return JsonResponse(data, safe = False)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        item_serializer = MaterialTaskSerializer(item)
-        
-        if not('_task' in data):
-            data['_task'] = item_serializer.data['_task']
-
-        if not('_classroom' in data):
-            data['_classroom'] = item_serializer.data['_classroom']
-        
-        already_in_db = MaterialTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
- 
-        if already_in_db:
-            serializer = MaterialTaskSerializer(already_in_db[0])
-        else:
-            serializer = MaterialTaskSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                return HttpResponse(status = 400)
-
-        data = concatenateMaterialTask(serializer.data)
-        return JsonResponse(data, safe = False)
-    
-    elif request.method == 'DELETE':
-        item.delete()
-        return HttpResponse(status = 204)
+    return HttpResponse(status = 404)
 
 # ********************************
 # *     MATERIAL TASK DETAIL     *
