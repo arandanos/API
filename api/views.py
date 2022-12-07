@@ -449,7 +449,7 @@ def TaskViewID(request, _id):
     if request.method == 'GET':
         serializer = TaskSerializer(item)
         data = concatenateTask(serializer.data)
-        return JsonResponse(serializer.data, safe = False)
+        return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
