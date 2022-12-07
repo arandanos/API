@@ -71,16 +71,16 @@ class Classroom(models.Model):
 
 class Feedback(models.Model):
     _id = models.AutoField(primary_key = True)
-    _feedback = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
 
     class Meta:
         _id = ['_id']
-        _feedback = ['_feedback']
+        _name = ['_name']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
-            "_feedback" : self._feedback
+            "_name" : self._name
         }
         return json_str
 

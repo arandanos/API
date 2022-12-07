@@ -352,7 +352,7 @@ def ClassroomViewID(request, _id):
 
 #· MÉTODOS AUXILIARES
 def concatenateFeedback(data):
-    data['_feedback'] = getAccessibleElementByID(data['_feedback'])
+    data['_name'] = getAccessibleElementByID(data['_name'])
     return data
 
 def getFeedbackByID(_id):
@@ -376,7 +376,7 @@ def FeedbackView(request):
         data = JSONParser().parse(request)
         serializer = FeedbackSerializer(data = data)
         
-        already_in_db = Feedback.objects.filter(_feedback = data['_feedback'])
+        already_in_db = Feedback.objects.filter(_feedback = data['_name'])
                 
         if already_in_db:
             serializer = FeedbackSerializer(already_in_db[0])

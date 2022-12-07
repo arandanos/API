@@ -25,7 +25,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['_id', '_feedback']
+        fields = ['_id', '_name']
         
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
