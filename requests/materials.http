@@ -1,0 +1,47 @@
+### * TABLA MATERIAL TYPE
+
+GET http://localhost:8000/api/material_type
+
+###
+
+GET http://localhost:8000/api/material_type/4
+
+###
+POST http://localhost:8000/api/material_type
+
+{
+    "_name" : "19"
+}
+
+### * TABLA MATERIAL
+
+GET http://localhost:8000/api/material
+
+###
+
+GET http://localhost:8000/api/material/11
+
+###
+
+GET http://localhost:8000/api/material/type/4
+
+###
+
+POST http://localhost:8000/api/material
+
+{
+    "_color" : "14",
+    "_type": "5",
+    "_quantity": "9"
+}
+
+###
+
+POST http://localhost:8000/api/feedback
+
+{
+    "_feedback": "7"
+}
+
+
+###

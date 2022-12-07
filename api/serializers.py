@@ -45,7 +45,7 @@ class KitchenOrderDetailSerializer(serializers.ModelSerializer):
 class MaterialTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaterialType
-        fields = ['_id', '_item']
+        fields = ['_id', '_name']
 
 class MaterialSerializer(serializers.ModelSerializer):
     class Meta:

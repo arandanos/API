@@ -611,7 +611,6 @@ ALTER TABLE public.django_session OWNER TO admin;
 COPY public.api_accessibleelement (_id, _text, _pictogram) FROM stdin;
 4	Clase D	https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg
 5	Clase E	https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg
-3	Clase C	https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg
 1	Clase A	https://api.arasaac.org/api/pictograms/4610?resolution=500&download=false\n
 6	Clase F	https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg
 8	Petición Material	https://api.arasaac.org/api/pictograms/15838?resolution=500&download=false
@@ -620,7 +619,16 @@ COPY public.api_accessibleelement (_id, _text, _pictogram) FROM stdin;
 10	Huevo	https://api.arasaac.org/api/pictograms/35917?resolution=500&download=false
 11	Fruta	https://api.arasaac.org/api/pictograms/4653?resolution=500&download=false
 12	MUY BIEN!	https://api.arasaac.org/api/pictograms/4653?download=false
-2	Clase B	http://localhost:8000/api/image/Beren
+3	Clase C	https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg
+2	Clase B	https://static.vecteezy.com/system/resources/previews/000/401/729/original/vector-capital-letter-a-vintage-typography-style.jpg
+18	Lapiz	https://api.arasaac.org/api/pictograms/2440?download=false
+13	Cartulina	https://api.arasaac.org/api/pictograms/17208?resolution=500&download=false
+15	Azul Claro	https://api.arasaac.org/api/pictograms/3355?resolution=500&download=false
+14	Azul Oscuro	https://api.arasaac.org/api/pictograms/4869?resolution=500&download=false
+16	Rojo	https://api.arasaac.org/api/pictograms/2808?resolution=500&download=false
+17	Verde	https://api.arasaac.org/api/pictograms/4887?resolution=500&download=false
+19	Sacapuntas	https://api.arasaac.org/api/pictograms/2553?download=false
+20	Triturado	https://api.arasaac.org/api/pictograms/28157?resolution=500&download=false
 \.
 
 
@@ -673,8 +681,7 @@ COPY public.api_feedback (_id, _feedback_id) FROM stdin;
 --
 
 COPY public.api_kitchenorder (_id, _auto_calc, _task_id) FROM stdin;
-2	t	7
-3	f	8
+4	f	10
 \.
 
 
@@ -683,42 +690,24 @@ COPY public.api_kitchenorder (_id, _auto_calc, _task_id) FROM stdin;
 --
 
 COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _kitchen_order_id) FROM stdin;
-10	0	12	6	2
-12	0	9	5	2
-14	0	9	6	2
-15	0	9	4	2
-18	0	10	6	2
-19	0	11	4	2
-20	0	11	5	2
-21	0	10	4	2
-22	0	11	6	2
-23	0	12	5	2
-24	0	12	4	2
-25	0	10	5	2
-28	0	8	4	3
-30	0	8	5	3
-31	0	8	6	3
-32	0	9	4	3
-33	0	9	6	3
-34	0	9	5	3
-35	0	10	5	3
-36	0	10	4	3
-37	0	10	6	3
-38	0	11	4	3
-39	0	11	5	3
-40	0	11	6	3
-41	0	12	4	3
-42	0	12	6	3
-43	0	12	5	3
-27	2	7	5	3
-26	4	7	4	3
-29	2	7	6	3
-9	5	7	5	2
-8	5	7	6	2
-16	0	7	4	2
-11	2	8	6	2
-13	3	8	4	2
-17	1	8	5	2
+45	0	8	4	4
+46	0	7	5	4
+47	0	7	4	4
+51	0	8	6	4
+52	0	8	5	4
+53	0	10	6	4
+54	0	10	4	4
+55	0	9	4	4
+56	0	9	6	4
+57	0	10	5	4
+58	0	9	5	4
+59	0	11	5	4
+61	0	12	6	4
+62	0	11	6	4
+63	0	11	4	4
+66	0	12	4	4
+67	0	12	5	4
+49	4	7	6	4
 \.
 
 
@@ -727,6 +716,16 @@ COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _ki
 --
 
 COPY public.api_material (_id, _quantity, _color_id, _type_id) FROM stdin;
+1	10	14	1
+2	2	15	1
+3	5	16	1
+4	7	17	1
+5	9	14	2
+6	9	15	2
+7	9	16	2
+8	9	14	3
+9	9	17	3
+10	9	15	3
 \.
 
 
@@ -752,6 +751,9 @@ COPY public.api_materialtaskdetail (_id, _quantity, _material_id, _material_task
 --
 
 COPY public.api_materialtype (_id, _item_id) FROM stdin;
+1	13
+3	18
+2	19
 \.
 
 
@@ -761,8 +763,7 @@ COPY public.api_materialtype (_id, _item_id) FROM stdin;
 
 COPY public.api_task (_id, _due_date, _type, _status, _auto_feedback, _feedback_id, _name_id) FROM stdin;
 5	2022-11-29	MATERIAL	f	f	\N	8
-7	2022-11-23	COMANDA	f	t	\N	7
-8	2022-12-01	COMANDA	f	f	\N	7
+10	2022-12-02	COMANDA	f	f	\N	7
 \.
 
 
@@ -978,7 +979,7 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 -- Name: api_accessibleelement__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_accessibleelement__id_seq', 12, true);
+SELECT pg_catalog.setval('public.api_accessibleelement__id_seq', 20, true);
 
 
 --
@@ -992,7 +993,7 @@ SELECT pg_catalog.setval('public.api_classroom__id_seq', 12, true);
 -- Name: api_dish__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_dish__id_seq', 6, true);
+SELECT pg_catalog.setval('public.api_dish__id_seq', 7, true);
 
 
 --
@@ -1006,21 +1007,21 @@ SELECT pg_catalog.setval('public.api_feedback__id_seq', 1, true);
 -- Name: api_kitchenorder__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_kitchenorder__id_seq', 3, true);
+SELECT pg_catalog.setval('public.api_kitchenorder__id_seq', 4, true);
 
 
 --
 -- Name: api_kitchenorderdetail__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_kitchenorderdetail__id_seq', 43, true);
+SELECT pg_catalog.setval('public.api_kitchenorderdetail__id_seq', 67, true);
 
 
 --
 -- Name: api_material__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_material__id_seq', 1, false);
+SELECT pg_catalog.setval('public.api_material__id_seq', 10, true);
 
 
 --
@@ -1041,14 +1042,14 @@ SELECT pg_catalog.setval('public.api_materialtaskdetail__id_seq', 1, false);
 -- Name: api_materialtype__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtype__id_seq', 1, false);
+SELECT pg_catalog.setval('public.api_materialtype__id_seq', 3, true);
 
 
 --
 -- Name: api_task__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_task__id_seq', 8, true);
+SELECT pg_catalog.setval('public.api_task__id_seq', 10, true);
 
 
 --
@@ -1111,7 +1112,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 14, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 25, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 31, true);
 
 
 --
