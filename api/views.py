@@ -33,7 +33,9 @@ def getAccessibleElementByID(_id):
 def getNewID():
     accessible_elements = AccessibleElement.objects.all().order_by('_id')
     data = AccessibleElementSerializer(accessible_elements, many = True).data
-    new_id = data[len(data) - 1]['_id'] + 1
+    new_id = 1
+    if len(data) != 0:
+        new_id = data[len(data) - 1]['_id'] + 1
     return new_id
     
 # Peticiones GET y POST simples
