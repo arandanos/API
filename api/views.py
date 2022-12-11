@@ -1086,7 +1086,7 @@ def PrinterLaminatorTaskView(request):
         data = JSONParser().parse(request)
         serializer = PrinterLaminatorTaskSerializer(data = data)
         
-        already_in_db = PrinterLaminatorTask.objects.filter(_task = data['_task'])
+        already_in_db = PrinterLaminatorTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
                 
         if already_in_db:
             serializer = PrinterLaminatorTaskSerializer(already_in_db[0])
