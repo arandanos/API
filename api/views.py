@@ -1013,3 +1013,45 @@ def MaterialTaskDetailViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+# *****************************
+# *           COLOR           *
+# *****************************
+
+#· MÉTODOS AUXILIARES
+def concatenateColor(data):
+    data['_name'] = getAccessibleElementByID(data['_name'])
+    return data
+
+def getColorByID(_id):
+    item = Color.objects.get(_id = _id)
+    serializer = ColorSerializer(item)
+    data = concatenateColor(serializer.data)
+    return data
+
+@csrf_exempt
+def ColorView(request):
+    if request.method == 'GET':
+        colors = Color.objects.all().order_by('_id')
+        serializer = ColorSerializer(colors, many = True)
+
+        for color in serializer.data:
+            color = concatenateColor(color)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ColorSerializer(data = data)
+        
+        already_in_db = Color.objects.filter(_name = data['_name'])
+                
+        if already_in_db:
+            serializer = Color(already_in_db[0])
+        elif serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenateColor(serializer.data)
+        return JsonResponse(data, status = 201)
