@@ -1055,3 +1055,62 @@ def ColorView(request):
 
         data = concatenateColor(serializer.data)
         return JsonResponse(data, status = 201)
+
+# ************************************
+# *      LAMINATOR PRINTER TASK      *
+# ************************************
+
+#· MÉTODOS AUXILIARES
+def concatenatePrinterLaminatorTask(data):
+    data['_task'] = getTaskByID(data['_task'])
+    data['_classroom'] = getClassroomByID(data['_classroom'])
+
+    if '_color' in data:
+        data['_color'] = getColorByID(data['_color'])
+
+    return data
+
+@csrf_exempt
+def PrinterLaminatorTaskView(request):
+    
+    if request.method == 'GET':
+        tasks = PrinterLaminatorTask.objects.all().order_by('_id')
+        serializer = PrinterLaminatorTaskSerializer(tasks, many = True)
+
+        for task in serializer.data:
+            task = concatenatePrinterLaminatorTask(task)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PrinterLaminatorTaskSerializer(data = data)
+        
+        already_in_db = PrinterLaminatorTask.objects.filter(_task = data['_task'])
+                
+        if already_in_db:
+            serializer = PrinterLaminatorTaskSerializer(already_in_db[0])
+        elif serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenatePrinterLaminatorTask(serializer.data)
+        return JsonResponse(data, status = 201)
+    
+@csrf_exempt
+def PrinterLaminatorTaskViewID(request, _id):
+
+    try: 
+        item = PrinterLaminatorTask.objects.get(_id = _id)
+    except AccessibleElement.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = PrinterLaminatorTaskSerializer(item)
+        data = concatenatePrinterLaminatorTask(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)

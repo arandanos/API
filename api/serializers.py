@@ -66,3 +66,9 @@ class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
         fields = ['_id', '_name']
+
+
+class PrinterLaminatorTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrinterLaminatorTask
+        fields = ['_id', '_task', '_classroom', '_color', '_quantity']
