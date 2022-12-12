@@ -15,7 +15,7 @@ POST http://localhost:8000/api/material_type
 
 ### * TABLA MATERIAL
 
-GET http://localhost:8000/api/material
+GET http://localhost:8000/api/material_task_detail/task/4
 
 ###
 

@@ -49,5 +49,8 @@ urlpatterns = [
     path('api/material_task_detail', MaterialTaskDetailView),
     path('api/material_task_detail/<_id>', MaterialTaskDetailViewID),
     path('api/material_task_detail/task/<_id>', MaterialTaskDetailViewTaskID),
+    path('api/color', ColorView),
+    path('api/printer_laminator_task', PrinterLaminatorTaskView),
+    path('api/printer_laminator_task/<_id>', PrinterLaminatorTaskViewID),
     path('api/image/<_image>', ImageViewID)
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

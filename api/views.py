@@ -422,7 +422,7 @@ def TaskView(request):
 
         already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
                 
-        if '_feedback' in data and not data['_feedback'] == None:
+        if not data['_feedback'] == None:
             already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
 
         if already_in_db:
@@ -948,7 +948,7 @@ def MaterialTaskDetailView(request):
         data = JSONParser().parse(request)
         serializer = MaterialTaskDetailSerializer(data = data)
         
-        already_in_db = MaterialTaskDetail.objects.filter(_material_task = data['_material_task'], _material = data['_material'], _task_quantity = data['_task_quantity'])
+        already_in_db = MaterialTaskDetail.objects.filter(_material_task = data['_material_task'], _material = data['_material'], _quantity = data['_quantity'])
                 
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
@@ -983,10 +983,10 @@ def MaterialTaskDetailViewID(request, _id):
         if not('_material' in data):
             data['_material'] = item_serializer.data['_material']
         
-        if not('_task_quantity' in data):
-            data['_task_quantity'] = item_serializer.data['_task_quantity']
+        if not('_quantity' in data):
+            data['_quantity'] = item_serializer.data['_quantity']
         
-        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _material = data['_material'], _task_quantity = data['_task_quantity'])
+        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _material = data['_material'], _quantity = data['_quantity'])
  
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
@@ -1016,3 +1016,127 @@ def MaterialTaskDetailViewTaskID(request, _id):
         return JsonResponse(serializers.data, safe = False)
 
     return HttpResponse(status = 400)
+# *****************************
+# *           COLOR           *
+# *****************************
+
+#· MÉTODOS AUXILIARES
+def concatenateColor(data):
+    data['_name'] = getAccessibleElementByID(data['_name'])
+    return data
+
+def getColorByID(_id):
+    item = Color.objects.get(_id = _id)
+    serializer = ColorSerializer(item)
+    data = concatenateColor(serializer.data)
+    return data
+
+@csrf_exempt
+def ColorView(request):
+    if request.method == 'GET':
+        colors = Color.objects.all().order_by('_id')
+        serializer = ColorSerializer(colors, many = True)
+
+        for color in serializer.data:
+            color = concatenateColor(color)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ColorSerializer(data = data)
+        
+        already_in_db = Color.objects.filter(_name = data['_name'])
+                
+        if already_in_db:
+            serializer = Color(already_in_db[0])
+        elif serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenateColor(serializer.data)
+        return JsonResponse(data, status = 201)
+
+# ************************************
+# *      LAMINATOR PRINTER TASK      *
+# ************************************
+
+#· MÉTODOS AUXILIARES
+def concatenatePrinterLaminatorTask(data):
+    data['_task'] = getTaskByID(data['_task'])
+    data['_classroom'] = getClassroomByID(data['_classroom'])
+
+    if not data['_color'] == None:
+        data['_color'] = getColorByID(data['_color'])
+
+    return data
+
+@csrf_exempt
+def PrinterLaminatorTaskView(request):
+    
+    if request.method == 'GET':
+        tasks = PrinterLaminatorTask.objects.all().order_by('_id')
+        serializer = PrinterLaminatorTaskSerializer(tasks, many = True)
+
+        for task in serializer.data:
+            task = concatenatePrinterLaminatorTask(task)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PrinterLaminatorTaskSerializer(data = data)
+        
+        already_in_db = PrinterLaminatorTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+                
+        if already_in_db:
+            serializer = PrinterLaminatorTaskSerializer(already_in_db[0])
+        elif serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenatePrinterLaminatorTask(serializer.data)
+        return JsonResponse(data, status = 201)
+    
+@csrf_exempt
+def PrinterLaminatorTaskViewID(request, _id):
+
+    try: 
+        item = PrinterLaminatorTask.objects.get(_id = _id)
+    except AccessibleElement.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = PrinterLaminatorTaskSerializer(item)
+        data = concatenatePrinterLaminatorTask(serializer.data)
+        return JsonResponse(data, safe = False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = PrinterLaminatorTaskSerializer(item)
+        
+        if not('_classroom' in data):
+            data['_classroom'] = item_serializer.data['_classroom']
+
+        if not('_task' in data):
+            data['_task'] = item_serializer.data['_task']
+        
+        already_in_db = PrinterLaminatorTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+ 
+        if already_in_db:
+            serializer = PrinterLaminatorTaskSerializer(already_in_db[0])
+        else:
+            serializer = PrinterLaminatorTaskSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
+
+        data = concatenatePrinterLaminatorTask(serializer.data)  
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)

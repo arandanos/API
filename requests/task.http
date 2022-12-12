@@ -7,10 +7,10 @@ GET http://localhost:8000/api/task
 POST http://localhost:8000/api/task
 
 {
-    "_name" : "1",
-    "_due_date": "2022-11-22",
-    "_type": "MATERIAL",
-    "_status": "True",
+    "_name" : "26",
+    "_due_date": "2022-10-26",
+    "_type": "PLASTIFICADORA",
+    "_status": "False",
     "_auto_feedback": "True"
 }
 
@@ -30,4 +30,4 @@ PUT http://localhost:8000/api/task/1
 
 ###
 
-DELETE http://localhost:8000/api/task/9
+DELETE http://localhost:8000/api/task/11

@@ -220,13 +220,53 @@ class MaterialTaskDetail(models.Model):
         _id = ['_id']
         _material_task = ['_material_task']
         _material = ['_material'] 
-        _task_quantity = ['_task_quantity']
+        _quantity = ['_quantity']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
             "_material_task" : self._material_task, 
             "_material" : self._material,                    
-            "_task_quantity" : self._task_quantity
+            "_quantity" : self._quantity
+        }
+        return json_str
+
+class Color(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+
+    class Meta:
+        _id = ['_id']
+        _name = ['_name']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_name" : self._name
+        }
+        return json_str
+
+class PrinterLaminatorTask(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _task = models.ForeignKey("Task", on_delete = models.CASCADE)
+    _classroom = models.ForeignKey("Classroom", on_delete = models.CASCADE)
+    _color = models.ForeignKey("Color", on_delete = models.CASCADE, null=True)
+    _quantity = models.IntegerField(null=True)
+
+    class Meta:
+        _id = ['_id']
+        _task = ['_task']
+        _classroom = ['_classroom']
+        _color = ['_color']
+        _quantity = ['_quantity'] 
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_task" : self._task,
+            "_classroom" : self._classroom,
+            "_color" : self._color,
+            "_quantity" : self._quantity
+
         }
         return json_str
