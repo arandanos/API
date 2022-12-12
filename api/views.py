@@ -424,7 +424,7 @@ def TaskView(request):
 
         already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
                 
-        if '_feedback' in data and not data['_feedback'] == None:
+        if not data['_feedback'] == None:
             already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
 
         if already_in_db:
@@ -958,7 +958,7 @@ def MaterialTaskDetailView(request):
         data = JSONParser().parse(request)
         serializer = MaterialTaskDetailSerializer(data = data)
         
-        already_in_db = MaterialTaskDetail.objects.filter(_material_task = data['_material_task'], _material = data['_material'], _task_quantity = data['_task_quantity'])
+        already_in_db = MaterialTaskDetail.objects.filter(_material_task = data['_material_task'], _material = data['_material'], _quantity = data['_quantity'])
                 
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
@@ -993,10 +993,10 @@ def MaterialTaskDetailViewID(request, _id):
         if not('_material' in data):
             data['_material'] = item_serializer.data['_material']
         
-        if not('_task_quantity' in data):
-            data['_task_quantity'] = item_serializer.data['_task_quantity']
+        if not('_quantity' in data):
+            data['_quantity'] = item_serializer.data['_quantity']
         
-        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _material = data['_material'], _task_quantity = data['_task_quantity'])
+        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _material = data['_material'], _quantity = data['_quantity'])
  
         if already_in_db:
             serializer = MaterialTaskDetailSerializer(already_in_db[0])
@@ -1065,7 +1065,7 @@ def concatenatePrinterLaminatorTask(data):
     data['_task'] = getTaskByID(data['_task'])
     data['_classroom'] = getClassroomByID(data['_classroom'])
 
-    if '_color' in data:
+    if not data['_color'] == None:
         data['_color'] = getColorByID(data['_color'])
 
     return data
@@ -1109,6 +1109,30 @@ def PrinterLaminatorTaskViewID(request, _id):
     if request.method == 'GET':
         serializer = PrinterLaminatorTaskSerializer(item)
         data = concatenatePrinterLaminatorTask(serializer.data)
+        return JsonResponse(data, safe = False)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = PrinterLaminatorTaskSerializer(item)
+        
+        if not('_classroom' in data):
+            data['_classroom'] = item_serializer.data['_classroom']
+
+        if not('_task' in data):
+            data['_task'] = item_serializer.data['_task']
+        
+        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+ 
+        if already_in_db:
+            serializer = MaterialTaskDetailSerializer(already_in_db[0])
+        else:
+            serializer = MaterialTaskDetailSerializer(item, data = data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return HttpResponse(status = 400)
+
+        data = concatenateMaterialTaskDetail(serializer.data)  
         return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':

@@ -60,7 +60,7 @@ class MaterialTaskSerializer(serializers.ModelSerializer):
 class MaterialTaskDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaterialTaskDetail
-        fields = ['_id', '_material_task', '_material', '_task_quantity']
+        fields = ['_id', '_material_task', '_material', '_quantity']
 
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,0 +1,9 @@
+GET http://localhost:8000/api/color
+
+###
+
+POST http://localhost:8000/api/color
+
+{
+    "_name" : "25"
+}

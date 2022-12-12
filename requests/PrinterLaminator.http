@@ -1,0 +1,27 @@
+GET http://localhost:8000/api/printer_laminator_task
+
+###
+
+POST http://localhost:8000/api/printer_laminator_task
+
+{
+    "_classroom": "7",
+    "_task": "17"
+}
+
+###
+
+GET http://localhost:8000/api/task/12
+
+###
+
+PUT http://localhost:8000/api/printer_laminator_task/1
+
+{
+    "_classroom": "8"
+}
+
+
+###
+
+DELETE http://localhost:8000/api/task/11

@@ -220,14 +220,14 @@ class MaterialTaskDetail(models.Model):
         _id = ['_id']
         _material_task = ['_material_task']
         _material = ['_material'] 
-        _task_quantity = ['_task_quantity']
+        _quantity = ['_quantity']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
             "_material_task" : self._material_task, 
             "_material" : self._material,                    
-            "_task_quantity" : self._task_quantity
+            "_quantity" : self._quantity
         }
         return json_str
 
