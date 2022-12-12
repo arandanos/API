@@ -1121,18 +1121,18 @@ def PrinterLaminatorTaskViewID(request, _id):
         if not('_task' in data):
             data['_task'] = item_serializer.data['_task']
         
-        already_in_db = MaterialTaskDetail.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
+        already_in_db = PrinterLaminatorTask.objects.filter(_task = data['_task'], _classroom = data['_classroom'])
  
         if already_in_db:
-            serializer = MaterialTaskDetailSerializer(already_in_db[0])
+            serializer = PrinterLaminatorTaskSerializer(already_in_db[0])
         else:
-            serializer = MaterialTaskDetailSerializer(item, data = data)
+            serializer = PrinterLaminatorTaskSerializer(item, data = data)
             if serializer.is_valid():
                 serializer.save()
             else:
                 return HttpResponse(status = 400)
 
-        data = concatenateMaterialTaskDetail(serializer.data)  
+        data = concatenatePrinterLaminatorTask(serializer.data)  
         return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
