@@ -227,7 +227,6 @@ def DishViewID(request, _id):
 
     try: 
         item = Dish.objects.get(_id = _id)
-
     except Dish.DoesNotExist:
         raise Http404('Not found')
 
@@ -311,7 +310,6 @@ def ClassroomViewID(request, _id):
 
     try: 
         item = Classroom.objects.get(_id = _id)
-
     except Classroom.DoesNotExist:
         raise Http404('Not found')
 
@@ -442,7 +440,6 @@ def TaskViewID(request, _id):
 
     try: 
         item = Task.objects.get(_id = _id)
-
     except Task.DoesNotExist:
         raise Http404('Not found')
 
@@ -556,7 +553,7 @@ def KitchenOrderViewTaskID(request, _id):
 
     try: 
         item = KitchenOrder.objects.get(_task_id = _id)
-    except AccessibleElement.DoesNotExist:
+    except KitchenOrder.DoesNotExist:
         raise Http404('Not found')
     
     if request.method == 'GET':
@@ -610,7 +607,6 @@ def KitchenOrderDetailViewID(request, _id):
 
     try: 
         item = KitchenOrderDetail.objects.get(_id = _id)
-
     except KitchenOrderDetail.DoesNotExist:
         raise Http404('Not found')
 
@@ -655,14 +651,8 @@ def KitchenOrderDetailViewID(request, _id):
 
 @csrf_exempt
 def KitchenOrderDetailViewClassOrder(request, _classroom, _kitchen_order):
-
-    try: 
-        item = KitchenOrderDetail.objects.filter(_classroom_id = _classroom, _kitchen_order_id = _kitchen_order).order_by('_id')
-
-    except KitchenOrderDetail.DoesNotExist:
-        raise Http404('Not found')
-
     if request.method == 'GET':
+        item = KitchenOrderDetail.objects.filter(_classroom_id = _classroom, _kitchen_order_id = _kitchen_order).order_by('_id')
         serializer = KitchenOrderDetailSerializer(item, many = True)
 
         for kitchen_order_detail in serializer.data:
@@ -1013,3 +1003,16 @@ def MaterialTaskDetailViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+csrf_exempt
+def MaterialTaskDetailViewTaskID(request, _id):
+    if request.method == 'GET':
+        material_task_details = MaterialTaskDetail.objects.filter(_material_task = _id)
+        serializers = MaterialTaskDetailSerializer(material_task_details, many = True)
+
+        for material_task_detail in serializers.data:
+            material_task_detail = concatenateMaterialTaskDetail(material_task_detail)
+
+        return JsonResponse(serializers.data, safe = False)
+
+    return HttpResponse(status = 400)
