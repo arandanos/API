@@ -3,3 +3,13 @@ GET http://localhost:8000/api/material_task
 ###
 
 GET http://localhost:8000/api/material_task_detail
+
+###
+
+POST http://localhost:8000/api/material_task_detail
+
+{
+    "_material_task" : "4",
+    "_material" : "12",
+    "_quantity" : 1
+}

@@ -1,0 +1,13 @@
+# * http://localhost:8000/api/material
+
+POST http://localhost:8000/api/material
+
+{
+    "_type": "5",
+    "_color": "17",
+    "_quantity": 10
+}
+
+###
+
+GET http://localhost:8000/api/material

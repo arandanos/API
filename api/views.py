@@ -783,8 +783,8 @@ def MaterialViewID(request, _id):
         data = JSONParser().parse(request)
         item_serializer = MaterialSerializer(item)
         
-        if not('_name' in data):
-            data['_name'] = item_serializer.data['_name']
+        if not('_type' in data):
+            data['_type'] = item_serializer.data['_type']
 
         if not('_color' in data):
             data['_color'] = item_serializer.data['_color']
@@ -792,7 +792,7 @@ def MaterialViewID(request, _id):
         if not('_quantity' in data):
             data['_quantity'] = item_serializer.data['_quantity']
         
-        already_in_db = Material.objects.filter(_name = data['_name'], _color = data['_color'], _quantity = data['_quantity'])
+        already_in_db = Material.objects.filter(_type = data['_type'], _color = data['_color'], _quantity = data['_quantity'])
  
         if already_in_db:
             serializer = MaterialSerializer(already_in_db[0])

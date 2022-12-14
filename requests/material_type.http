@@ -1,0 +1,11 @@
+# * http://localhost:8000/api/material_type
+
+POST http://localhost:8000/api/material_type
+
+{
+    "_name": "19"
+}
+
+###
+
+GET http://localhost:8000/api/material_type
