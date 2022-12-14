@@ -1140,3 +1140,76 @@ def PrinterLaminatorTaskViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+
+# ***************************
+# *         TEACHER         *
+# ***************************
+
+def concatenateTeacher(teacher):
+    teacher['_name'] = getAccessibleElementByID(teacher['_name'])
+    return teacher
+
+@csrf_exempt
+def TeacherView(request):
+    if request.method == 'GET':
+        teachers = Teacher.objects.all().order_by('_id')
+        serializer = TeacherSerializer(teachers, many = True)
+
+        for teacher in serializer.data:
+            teacher = concatenateTeacher(teacher)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = Teacher(data = data)
+                
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenateTeacher(serializer.data)
+        return JsonResponse(data, status = 201)
+
+def TeacherViewID(request, _id):
+    try: 
+        item =  Teacher.objects.get(_id = _id)
+    except Teacher.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = TeacherSerializer(item)
+        data = concatenateTeacher(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        item_serializer = TeacherSerializer(item)
+        
+        if not('_name' in data):
+            data['_name'] = item_serializer.data['_name']
+            
+        if not('_username' in data):
+            data['_username'] = item_serializer.data['_username']
+
+        if not('_password' in data):
+            data['_password'] = item_serializer.data['_password']
+
+        if not('_admin' in data):
+            data['_admin'] = item_serializer.data['_admin']
+        
+        serializer = AccessibleElementSerializer(item, data = data)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return HttpResponse(status = 400)
+        
+        data = concatenateTeacher(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
