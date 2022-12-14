@@ -270,3 +270,28 @@ class PrinterLaminatorTask(models.Model):
 
         }
         return json_str
+
+class Teacher(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _username = models.CharField(unique=True, max_length=32)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+    _password = models.TextField()
+    _admin = models.BooleanField(default=False)
+
+    class Meta:
+        _id = ['_id']
+        _username = ['_username']
+        _name = ['_name']
+        _password = ['_password']
+        _admin = ['_admin'] 
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_username" : self._username,
+            "_name" : self._name,
+            "_password" : self._password,
+            "_admin" : self._admin
+
+        }
+        return json_str
