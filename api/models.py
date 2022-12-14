@@ -296,7 +296,7 @@ class Teacher(models.Model):
         }
         return json_str
 
-class Teaches(models.Model):
+class Teach(models.Model):
     _id = models.AutoField(primary_key = True)
     _teacher = models.ForeignKey("Teacher", on_delete = models.CASCADE)
     _classroom = models.ForeignKey("Classroom", on_delete = models.CASCADE)
