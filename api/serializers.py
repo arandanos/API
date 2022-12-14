@@ -77,3 +77,8 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = ['_id', '_username', '_name', '_password', '_admin']
+
+class TeachesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teaches
+        fields = ['_id', '_teacher', '_classroom']

@@ -295,3 +295,21 @@ class Teacher(models.Model):
 
         }
         return json_str
+
+class Teaches(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _teacher = models.ForeignKey("Teacher", on_delete = models.CASCADE)
+    _classroom = models.ForeignKey("Classroom", on_delete = models.CASCADE)
+
+    class Meta:
+        _id = ['_id']
+        _teacher = ['_teacher']
+        _classroom = ['_classroom']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_teacher" : self._teacher,
+            "_classroom" : self._classroom
+        }
+        return json_str
