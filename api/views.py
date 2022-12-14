@@ -1008,12 +1008,12 @@ csrf_exempt
 def MaterialTaskDetailViewTaskID(request, _id):
     if request.method == 'GET':
         material_task_details = MaterialTaskDetail.objects.filter(_material_task = _id)
-        serializers = MaterialTaskDetailSerializer(material_task_details, many = True)
+        serializer = MaterialTaskDetailSerializer(material_task_details, many = True)
 
-        for material_task_detail in serializers.data:
+        for material_task_detail in serializer.data:
             material_task_detail = concatenateMaterialTaskDetail(material_task_detail)
 
-        return JsonResponse(serializers.data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
 
     return HttpResponse(status = 400)
 # *****************************
@@ -1270,3 +1270,15 @@ def TeachViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+
+def TeachViewTeacherID(request, _id):
+    if request == 'GET':
+        teaches = Teach.objects.filter(_teacher = _id)
+        serializer = TeachSerializer(teaches, many = True)
+        
+        for teach in serializer.data:
+            teach = concatenateTeach(teach)
+
+    return JsonResponse(serializer.data, safe = False)
+        
