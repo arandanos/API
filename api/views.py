@@ -1146,9 +1146,15 @@ def PrinterLaminatorTaskViewID(request, _id):
 # *         TEACHER         *
 # ***************************
 
-def concatenateTeacher(teacher):
-    teacher['_name'] = getAccessibleElementByID(teacher['_name'])
-    return teacher
+def concatenateTeacher(data):
+    data['_name'] = getAccessibleElementByID(data['_name'])
+    return data
+
+def getTeacherByID(_id):
+    item = Teacher.objects.get(_id = _id)
+    serializer = TeacherSerializer(item)
+    data = concatenateTeacher(serializer.data)
+    return data
 
 @csrf_exempt
 def TeacherView(request):
@@ -1208,6 +1214,57 @@ def TeacherViewID(request, _id):
             return HttpResponse(status = 400)
         
         data = concatenateTeacher(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)
+
+# ***************************
+# *         TEACHES         *
+# ***************************
+
+def concatenateTeach(data):
+    data['_teacher'] = getTeacherByID(data['_teacher'])
+    data['_classroom'] = getClassroomByID(data['_classroom'])
+    return data
+
+@csrf_exempt
+def TeachView(request):
+    if request.method == 'GET':
+        teaches = Teaches.objects.all().order_by('_id')
+        serializer = TeachesSerializer(teaches, many = True)
+
+        for teach in serializer.data:
+            teach = concatenateTeach(teach)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = Teaches(data = data)
+
+        already_in_db = Teaches.objects.filter(_teacher = data['_teacher'], _classroom = data['_classroom'])
+ 
+        if already_in_db:
+            serializer = TeachesSerializer(already_in_db[0])
+        elif serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenateTeach(serializer.data)
+        return JsonResponse(data, status = 201)
+
+def TeachViewID(request, _id):
+    try: 
+        item =  Teaches.objects.get(_id = _id)
+    except Teaches.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = TeachesSerializer(item)
+        data = concatenateTeach(serializer.data)
         return JsonResponse(data, safe = False)
     
     elif request.method == 'DELETE':
