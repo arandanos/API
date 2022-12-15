@@ -5,7 +5,7 @@ from .models import *
 class AccessibleElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessibleElement
-        fields = ['_id', '_text', '_pictogram']
+        fields = ['_id', '_text', '_pictogram', '_alt']
         
 class DishTypeSerializer(serializers.ModelSerializer):
     class Meta:

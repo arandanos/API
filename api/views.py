@@ -61,7 +61,7 @@ def AccessibleElementView(request):
 
         serializer = AccessibleElementSerializer(data = data)
         
-        already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
+        already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'], _alt = data['_alt'])
                 
         if already_in_db:
             serializer = AccessibleElementSerializer(already_in_db[0])
@@ -97,9 +97,12 @@ def AccessibleElementViewID(request, _id):
             
         if not('_pictogram' in data):
             data['_pictogram'] = item_serializer.data['_pictogram']
+
+        if not('_alt' in data):
+            data['_alt'] = item_serializer.data['_alt']
         
         # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
-        already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'])
+        already_in_db = AccessibleElement.objects.filter(_text = data['_text'], _pictogram = data['_pictogram'], _alt = data['_alt'])
  
         if already_in_db:
             serializer = AccessibleElementSerializer(already_in_db[0])

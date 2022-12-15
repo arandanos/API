@@ -10,17 +10,20 @@ class AccessibleElement(models.Model):
     _id = models.AutoField(primary_key = True)
     _text = models.TextField()
     _pictogram = models.TextField()
+    _alt = models.TextField()
     
     class Meta:
         _id = ['_id']
         _text = ['_text']
         _pictogram = ['_pictogram']
+        _alt = ['_alt']
  
     def __str__(self):
         json_str = {
             "_id" : self._id,
             "_text" : self._text,
-            "_pictogram" : self._pictogram
+            "_pictogram" : self._pictogram,
+            "_alt" : self._alt
         }
         return json_str
 
