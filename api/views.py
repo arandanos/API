@@ -161,7 +161,7 @@ def DishTypeViewID(request, _id):
         item_serializer = DishTypeSerializer(item)
         
         # Devuelve un array con todos los objetos cuyos valores sean los mismos que los argumentos
-        already_in_db = DishType.objects.filter(_id = item_serializer.data['_id'])
+        already_in_db = DishType.objects.filter(_id = item_serializer.data['_id'])[0]
  
         if already_in_db:
             return JsonResponse(already_in_db, safe = False)
