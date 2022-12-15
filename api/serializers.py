@@ -72,3 +72,13 @@ class PrinterLaminatorTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrinterLaminatorTask
         fields = ['_id', '_task', '_classroom', '_color', '_quantity']
+
+class TeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ['_id', '_username', '_name', '_password', '_is_admin']
+
+class TeachSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teach
+        fields = ['_id', '_teacher', '_classroom']
