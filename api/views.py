@@ -268,42 +268,28 @@ def DishViewID(request, _id):
 # *****************************
 
 #· MÉTODOS AUXILIARES
-def concatenateClassroom(data):
-    data['_name'] = getAccessibleElementByID(data['_name'])
-    return data
-
 def getClassroomByID(_id):
     item = Classroom.objects.get(_id = _id)
     serializer = ClassroomSerializer(item)
-    data = concatenateClassroom(serializer.data)
-    return data
+    return serializer.data
 
 @csrf_exempt
 def ClassroomView(request):
     if request.method == 'GET':
         classrooms = Classroom.objects.all().order_by('_id')
         serializer = ClassroomSerializer(classrooms, many = True)
-
-        for classroom in serializer.data:
-            classroom = concatenateClassroom(classroom)
-
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = ClassroomSerializer(data = data)
-        
-        already_in_db = Classroom.objects.filter(_name = data['_name'])
                 
-        if already_in_db:
-            serializer = ClassroomSerializer(already_in_db[0])
-        elif serializer.is_valid():
+        if serializer.is_valid():
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
 
-        data = concatenateClassroom(serializer.data)
-        return JsonResponse(data, status = 201)
+        return JsonResponse(serializer.data, status = 201)
 
 @csrf_exempt
 def ClassroomViewID(request, _id):
@@ -316,7 +302,6 @@ def ClassroomViewID(request, _id):
     if request.method == 'GET':
         serializer = ClassroomSerializer(item)
         data = serializer.data
-        data['_name'] = getAccessibleElementByID(serializer.data['_name'])
         return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
@@ -337,8 +322,7 @@ def ClassroomViewID(request, _id):
             else:
                 return HttpResponse(status = 400)
         
-        data = concatenateClassroom(serializer.data)
-        return JsonResponse(data, safe = False)
+        return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'DELETE':
         item.delete()

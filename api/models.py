@@ -56,7 +56,7 @@ class Dish(models.Model):
 
 class Classroom(models.Model):
     _id = models.AutoField(primary_key = True)
-    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+    _name = models.TextField(unique=True)
     
     class Meta:
         _id = ['_id']
