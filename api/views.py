@@ -728,7 +728,7 @@ def MaterialTypeViewID(request, _id):
 
 #· MÉTODOS AUXILIARES
 def concatenateMaterial(data):
-    data['_color'] = getAccessibleElementByID(data['_color'])
+    data['_color'] = getColorByID(data['_color'])
     data['_type'] = getMaterialTypeByID(data['_type'])
     return data
 

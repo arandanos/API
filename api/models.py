@@ -174,7 +174,7 @@ class MaterialType(models.Model):
 class Material(models.Model):
     _id = models.AutoField(primary_key = True)
     _type = models.ForeignKey("MaterialType", on_delete = models.CASCADE)
-    _color = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+    _color = models.ForeignKey("Color", on_delete = models.CASCADE)
     _quantity = models.IntegerField(default = 0)
 
     class Meta:
