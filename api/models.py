@@ -276,14 +276,14 @@ class Teacher(models.Model):
     _username = models.CharField(unique=True, max_length=32)
     _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _password = models.TextField()
-    _admin = models.BooleanField(default=False)
+    _is_admin = models.BooleanField(default=False)
 
     class Meta:
         _id = ['_id']
         _username = ['_username']
         _name = ['_name']
         _password = ['_password']
-        _admin = ['_admin'] 
+        _is_admin = ['_is_admin'] 
  
     def __str__(self):
         json_str = {
@@ -291,7 +291,7 @@ class Teacher(models.Model):
             "_username" : self._username,
             "_name" : self._name,
             "_password" : self._password,
-            "_admin" : self._admin
+            "_is_admin" : self._is_admin
 
         }
         return json_str

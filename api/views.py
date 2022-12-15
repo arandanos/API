@@ -1191,22 +1191,8 @@ def TeacherViewID(request, _id):
         return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        item_serializer = TeacherSerializer(item)
-        
-        if not('_name' in data):
-            data['_name'] = item_serializer.data['_name']
-            
-        if not('_username' in data):
-            data['_username'] = item_serializer.data['_username']
-
-        if not('_password' in data):
-            data['_password'] = item_serializer.data['_password']
-
-        if not('_admin' in data):
-            data['_admin'] = item_serializer.data['_admin']
-        
-        serializer = AccessibleElementSerializer(item, data = data)
+        data = JSONParser().parse(request)        
+        serializer = Teacher(item, data = data)
 
         if serializer.is_valid():
             serializer.save()
