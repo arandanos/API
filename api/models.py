@@ -373,3 +373,21 @@ class Student(models.Model):
             "_pass_in_order" : self._pass_in_order
         }
         return json_str
+
+class PasswordPictogram(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _student = models.ForeignKey("Student", on_delete = models.CASCADE)
+    _digit = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
+
+    class Meta:
+        _id = ['_id']
+        _student = ['_student']
+        _digit = ['_digit']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_student" : self._student,
+            "_digit" : self._digit
+        }
+        return json_str

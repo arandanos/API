@@ -97,3 +97,8 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['_id', '_name', '_accessible_mode', '_text_size', '_password', '_caps', '_is_pass_pictogram', '_pass_in_order']
+
+class PasswordPictogramSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PasswordPictogram
+        fields = ['_id', '_student', '_digit']
