@@ -1298,3 +1298,67 @@ def TextSizeView(request):
             return JsonResponse(serializer.errors, status = 400)
 
         return JsonResponse(serializer.data, status = 201)
+
+# ***************************
+# *         STUDENT         *
+# ***************************
+
+def concatenateStudent(data):
+    data['_name'] = getAccessibleElementByID(data['_name'])
+    return data
+
+def getStudentByID(_id):
+    item = Student.objects.get(_id = _id)
+    serializer = StudentSerializer(item)
+    data = concatenateStudent(serializer.data)
+    return data
+
+@csrf_exempt
+def StudentView(request):
+    if request.method == 'GET':
+        students = Student.objects.all().order_by('_id')
+        serializer = StudentSerializer(students, many = True)
+
+        for student in serializer.data:
+            student = concatenateStudent(student)
+
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = StudentSerializer(data = data)
+                
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        data = concatenateStudent(serializer.data)
+        return JsonResponse(data, status = 201)
+
+def StudentViewID(request, _id):
+    try: 
+        item =  Student.objects.get(_id = _id)
+    except Teacher.DoesNotExist:
+        raise Http404('Not found')
+    
+    if request.method == 'GET':
+        serializer = StudentSerializer(item)
+        data = concatenateStudent(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)        
+        serializer = Student(item, data = data)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return HttpResponse(status = 400)
+        
+        data = concatenateStudent(serializer.data)
+        return JsonResponse(data, safe = False)
+    
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status = 204)

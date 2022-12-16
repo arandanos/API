@@ -343,15 +343,19 @@ class TextSize(models.Model):
 
 class Student(models.Model):
     _id = models.AutoField(primary_key = True)
-    _name = models.one("AccessibleElement", on_delete = models.CASCADE, unique=True)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE, unique=True)
+    _accessible_mode = models.ForeignKey("AccessibleMode", on_delete = models.CASCADE)
+    _text_size = models.ForeignKey("TextSize", on_delete = models.CASCADE)
     _password = models.TextField()
-    _caps = models.BooleanField()
-    _is_pass_pictogram = models.BooleanField()
-    _pass_in_order = models.BooleanField()
+    _caps = models.BooleanField(default=True)
+    _is_pass_pictogram = models.BooleanField(default=False)
+    _pass_in_order = models.BooleanField(default=True)
     
     class Meta:
         _id = ['_id']
         _name = ['_name']
+        _accessible_mode = ['_accessible_mode']
+        _text_size = ['_text_size']
         _password = ['_password']
         _caps = ['_caps']
         _is_pass_pictogram = ['_is_pass_pictogram']
@@ -361,6 +365,8 @@ class Student(models.Model):
         json_str = {
             "_id" : self._id,
             "_name" : self._name,
+            "_accessible_mode" : self._accessible_mode,
+            "_text_size" : self._text_size,
             "_password" : self._password,
             "_caps" : self._caps,
             "_is_pass_pictogram" : self._is_pass_pictogram,
