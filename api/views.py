@@ -1305,6 +1305,15 @@ def TextSizeView(request):
 
 def concatenateStudent(data):
     data['_name'] = getAccessibleElementByID(data['_name'])
+
+    if data['_is_pass_pictrogram']:
+        items = PasswordPictogram.objects.filter(_id = data['_id'])
+        serializer = PasswordPictogramSerializer(items, many = True)
+        for pictogram in serializer.data:
+            pictogram = getAccessibleElementByID(pictogram['_digit'])
+        
+        data['_password'] = serializer.data
+
     return data
 
 def getStudentByID(_id):
@@ -1362,3 +1371,25 @@ def StudentViewID(request, _id):
     elif request.method == 'DELETE':
         item.delete()
         return HttpResponse(status = 204)
+
+# **************************************
+# *         PASSWORD PICTOGRAM         *
+# **************************************
+
+@csrf_exempt
+def PasswordPictogramView(request):
+    if request.method == 'GET':
+        items = PasswordPictogram.objects.all().order_by('_id')
+        serializer = PasswordPictogramSerializer(items, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PasswordPictogramSerializer(data = data)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        return JsonResponse(serializer.data, status = 201)
