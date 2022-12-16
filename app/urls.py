@@ -57,5 +57,7 @@ urlpatterns = [
     path('api/teach', TeachView),
     path('api/teach/<_id>', TeachViewID),
     path('api/teach/teacher/<_id>', TeachViewTeacherID),
+    path('api/accessible_mode', AccessibleModeView),
+    path('api/text_size', TextSizeView),
     path('api/image/<_image>', ImageViewID)
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

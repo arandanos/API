@@ -316,3 +316,27 @@ class Teach(models.Model):
             "_classroom" : self._classroom
         }
         return json_str
+
+class AccessibleMode(models.Model):
+    _id = models.TextField(primary_key = True)
+    
+    class Meta:
+        _id = ['_id']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id
+        }
+        return json_str
+
+class TextSize(models.Model):
+    _id = models.TextField(primary_key = True)
+    
+    class Meta:
+        _id = ['_id']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id
+        }
+        return json_str

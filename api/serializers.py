@@ -82,3 +82,13 @@ class TeachSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teach
         fields = ['_id', '_teacher', '_classroom']
+
+class AccessibleModeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccessibleMode
+        fields = ['_id']
+
+class TextSizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TextSize
+        fields = ['_id']

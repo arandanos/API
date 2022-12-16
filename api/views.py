@@ -1156,7 +1156,7 @@ def TeacherView(request):
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = Teacher(data = data)
+        serializer = TeacherSerializer(data = data)
                 
         if serializer.is_valid():
             serializer.save()
@@ -1193,9 +1193,9 @@ def TeacherViewID(request, _id):
         item.delete()
         return HttpResponse(status = 204)
 
-# ***************************
-# *         TEACHES         *
-# ***************************
+# *************************
+# *         TEACH         *
+# *************************
 
 def concatenateTeach(data):
     data['_teacher'] = getTeacherByID(data['_teacher'])
@@ -1215,7 +1215,7 @@ def TeachView(request):
     
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = Teach(data = data)
+        serializer = TeachSerializer(data = data)
 
         already_in_db = Teach.objects.filter(_teacher = data['_teacher'], _classroom = data['_classroom'])
  
@@ -1254,4 +1254,47 @@ def TeachViewTeacherID(request, _id):
             teach = concatenateTeach(teach)
 
     return JsonResponse(serializer.data, safe = False)
-        
+
+# ***********************************
+# *         ACCESSIBLE MODE         *
+# ***********************************
+
+@csrf_exempt
+def AccessibleModeView(request):
+    if request.method == 'GET':
+        items = AccessibleMode.objects.all().order_by('_id')
+        serializer = AccessibleModeSerializer(items, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = AccessibleElementSerializer(data = data)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        return JsonResponse(serializer.data, status = 201)
+
+# *****************************
+# *         TEXT SIZE         *
+# *****************************
+
+@csrf_exempt
+def TextSizeView(request):
+    if request.method == 'GET':
+        items = TextSize.objects.all().order_by('_id')
+        serializer = TextSizeSerializer(items, many = True)
+        return JsonResponse(serializer.data, safe = False)
+    
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = TextSizeSerializer(data = data)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return JsonResponse(serializer.errors, status = 400)
+
+        return JsonResponse(serializer.data, status = 201)
