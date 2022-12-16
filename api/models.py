@@ -340,3 +340,30 @@ class TextSize(models.Model):
             "_id" : self._id
         }
         return json_str
+
+class Student(models.Model):
+    _id = models.AutoField(primary_key = True)
+    _name = models.one("AccessibleElement", on_delete = models.CASCADE, unique=True)
+    _password = models.TextField()
+    _caps = models.BooleanField()
+    _is_pass_pictogram = models.BooleanField()
+    _pass_in_order = models.BooleanField()
+    
+    class Meta:
+        _id = ['_id']
+        _name = ['_name']
+        _password = ['_password']
+        _caps = ['_caps']
+        _is_pass_pictogram = ['_is_pass_pictogram']
+        _pass_in_order = ['_pass_in_order']
+ 
+    def __str__(self):
+        json_str = {
+            "_id" : self._id,
+            "_name" : self._name,
+            "_password" : self._password,
+            "_caps" : self._caps,
+            "_is_pass_pictogram" : self._is_pass_pictogram,
+            "_pass_in_order" : self._pass_in_order
+        }
+        return json_str

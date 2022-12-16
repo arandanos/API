@@ -92,3 +92,8 @@ class TextSizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextSize
         fields = ['_id']
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['_id', '_name', '_password', '_caps', '_is_pass_pictogram', '_pass_in_order']
