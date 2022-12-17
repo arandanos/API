@@ -95,6 +95,8 @@ class Task(models.Model):
     _type = models.TextField()
     _status = models.BooleanField(default=False)
     _auto_feedback = models.BooleanField(default=False)
+    _teacher = models.ForeignKey("Teacher", on_delete = models.CASCADE)
+    _student = models.ForeignKey("Student", on_delete = models.CASCADE)
     
     class Meta:
         _id = ['_id']
@@ -104,6 +106,8 @@ class Task(models.Model):
         _type = ['_type']
         _status = ['_status']
         _auto_feedback = ['_auto_feedback']
+        _teacher = ['_teacher']
+        _student = ['_student']
  
     def __str__(self):
         json_str = {
@@ -113,7 +117,9 @@ class Task(models.Model):
             "_feedback" : self._feedback,
             "_type" : self._type,
             "_status" : self._status,
-            "_auto_feedback" : self._auto_feedback
+            "_auto_feedback" : self._auto_feedback,
+            "_teacher" : self._teacher,
+            "_student" : self._student
         }
         return json_str
 
@@ -317,18 +323,6 @@ class Teach(models.Model):
         }
         return json_str
 
-class AccessibleMode(models.Model):
-    _id = models.TextField(primary_key = True)
-    
-    class Meta:
-        _id = ['_id']
- 
-    def __str__(self):
-        json_str = {
-            "_id" : self._id
-        }
-        return json_str
-
 class TextSize(models.Model):
     _id = models.TextField(primary_key = True)
     
@@ -344,7 +338,7 @@ class TextSize(models.Model):
 class Student(models.Model):
     _id = models.AutoField(primary_key = True)
     _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE, unique=True)
-    _accessible_mode = models.ForeignKey("AccessibleMode", on_delete = models.CASCADE)
+    _only_pictrograms = models.BooleanField(default=False)
     _text_size = models.ForeignKey("TextSize", on_delete = models.CASCADE)
     _password = models.TextField()
     _caps = models.BooleanField(default=True)
@@ -354,7 +348,7 @@ class Student(models.Model):
     class Meta:
         _id = ['_id']
         _name = ['_name']
-        _accessible_mode = ['_accessible_mode']
+        _only_pictrograms = ['_only_pictrograms']
         _text_size = ['_text_size']
         _password = ['_password']
         _caps = ['_caps']
@@ -365,7 +359,7 @@ class Student(models.Model):
         json_str = {
             "_id" : self._id,
             "_name" : self._name,
-            "_accessible_mode" : self._accessible_mode,
+            "_only_pictrograms" : self._only_pictrograms,
             "_text_size" : self._text_size,
             "_password" : self._password,
             "_caps" : self._caps,

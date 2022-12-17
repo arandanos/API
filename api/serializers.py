@@ -30,7 +30,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['_id', '_name', '_due_date', '_feedback', '_type', '_status', '_auto_feedback']
+        fields = ['_id', '_name', '_due_date', '_feedback', '_type', '_status', '_auto_feedback', '_teacher', '_student']
         
 class KitchenOrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -67,7 +67,6 @@ class ColorSerializer(serializers.ModelSerializer):
         model = Color
         fields = ['_id', '_name']
 
-
 class PrinterLaminatorTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrinterLaminatorTask
@@ -83,11 +82,6 @@ class TeachSerializer(serializers.ModelSerializer):
         model = Teach
         fields = ['_id', '_teacher', '_classroom']
 
-class AccessibleModeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccessibleMode
-        fields = ['_id']
-
 class TextSizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextSize
@@ -96,7 +90,7 @@ class TextSizeSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['_id', '_name', '_accessible_mode', '_text_size', '_password', '_caps', '_is_pass_pictogram', '_pass_in_order']
+        fields = ['_id', '_name', '_only_pictrograms', '_text_size', '_password', '_caps', '_is_pass_pictogram', '_pass_in_order']
 
 class PasswordPictogramSerializer(serializers.ModelSerializer):
     class Meta:

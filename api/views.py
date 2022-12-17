@@ -380,6 +380,8 @@ def FeedbackView(request):
 #· MÉTODOS AUXILIARES
 def concatenateTask(data):
     data['_name'] = getAccessibleElementByID(data['_name'])
+    data['_teacher'] = getTeacherByID(data['_teacher'])
+    data['_student'] = getStudentByID(data['_student'])
 
     if '_feedback' in data and not data['_feedback'] == None:
         data['_feedback'] = getFeedbackByID(data['_feedback'])
@@ -1254,28 +1256,6 @@ def TeachViewTeacherID(request, _id):
             teach = concatenateTeach(teach)
 
     return JsonResponse(serializer.data, safe = False)
-
-# ***********************************
-# *         ACCESSIBLE MODE         *
-# ***********************************
-
-@csrf_exempt
-def AccessibleModeView(request):
-    if request.method == 'GET':
-        items = AccessibleMode.objects.all().order_by('_id')
-        serializer = AccessibleModeSerializer(items, many = True)
-        return JsonResponse(serializer.data, safe = False)
-    
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = AccessibleElementSerializer(data = data)
-
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return JsonResponse(serializer.errors, status = 400)
-
-        return JsonResponse(serializer.data, status = 201)
 
 # *****************************
 # *         TEXT SIZE         *

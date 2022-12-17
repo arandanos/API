@@ -57,7 +57,6 @@ urlpatterns = [
     path('api/teach', TeachView),
     path('api/teach/<_id>', TeachViewID),
     path('api/teach/teacher/<_id>', TeachViewTeacherID),
-    path('api/accessible_mode', AccessibleModeView),
     path('api/text_size', TextSizeView),
     path('api/student', StudentView),
     path('api/student/<_id>', StudentViewID),
