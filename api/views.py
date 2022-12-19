@@ -1286,7 +1286,7 @@ def TextSizeView(request):
 def concatenateStudent(data):
     data['_name'] = getAccessibleElementByID(data['_name'])
 
-    if data['_is_pass_pictrogram']:
+    if data['_is_pass_pictogram']:
         items = PasswordPictogram.objects.filter(_id = data['_id'])
         serializer = PasswordPictogramSerializer(items, many = True)
         for pictogram in serializer.data:
