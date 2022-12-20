@@ -1353,6 +1353,18 @@ def StudentViewID(request, _id):
         item.delete()
         return HttpResponse(status = 204)
 
+def StudentViewClassroomID(request, _id):
+    if request.method == 'GET':
+        students = Student.objects.filter(_classroom = _id).order_by('_id')
+        serializer = StudentSerializer(students, many = True)
+
+        for student in serializer.data:
+            student = concatenateStudent(student)
+
+        return JsonResponse(serializer.data, safe = False)
+
+    return HttpResponse(status = 400)
+
 # **************************************
 # *         PASSWORD PICTOGRAM         *
 # **************************************
