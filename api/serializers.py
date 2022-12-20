@@ -90,7 +90,7 @@ class TextSizeSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['_id', '_name', '_only_pictrograms', '_text_size', '_password', '_caps', '_is_pass_pictogram', '_pass_in_order']
+        fields = ['_id', '_name', '_password', '_classroom', '_only_pictograms', '_text_size', '_caps', '_is_pass_pictogram', '_pass_in_order']
 
 class PasswordPictogramSerializer(serializers.ModelSerializer):
     class Meta:

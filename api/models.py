@@ -337,10 +337,11 @@ class TextSize(models.Model):
 
 class Student(models.Model):
     _id = models.AutoField(primary_key = True)
-    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE, unique=True)
-    _only_pictrograms = models.BooleanField(default=False)
-    _text_size = models.ForeignKey("TextSize", on_delete = models.CASCADE)
+    _name = models.ForeignKey("AccessibleElement", on_delete = models.CASCADE)
     _password = models.TextField()
+    _classroom = models.ForeignKey("Classroom", on_delete = models.CASCADE)
+    _text_size = models.ForeignKey("TextSize", on_delete = models.CASCADE)
+    _only_pictograms = models.BooleanField(default=False)
     _caps = models.BooleanField(default=True)
     _is_pass_pictogram = models.BooleanField(default=False)
     _pass_in_order = models.BooleanField(default=True)
@@ -348,9 +349,10 @@ class Student(models.Model):
     class Meta:
         _id = ['_id']
         _name = ['_name']
-        _only_pictrograms = ['_only_pictrograms']
-        _text_size = ['_text_size']
         _password = ['_password']
+        _classroom = ['_classroom']
+        _only_pictograms = ['_only_pictograms']
+        _text_size = ['_text_size']
         _caps = ['_caps']
         _is_pass_pictogram = ['_is_pass_pictogram']
         _pass_in_order = ['_pass_in_order']
@@ -359,9 +361,10 @@ class Student(models.Model):
         json_str = {
             "_id" : self._id,
             "_name" : self._name,
-            "_only_pictrograms" : self._only_pictrograms,
-            "_text_size" : self._text_size,
             "_password" : self._password,
+            "_classroom" : self._classroom,
+            "_only_pictograms" : self._only_pictograms,
+            "_text_size" : self._text_size,
             "_caps" : self._caps,
             "_is_pass_pictogram" : self._is_pass_pictogram,
             "_pass_in_order" : self._pass_in_order

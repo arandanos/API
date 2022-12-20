@@ -1285,6 +1285,7 @@ def TextSizeView(request):
 
 def concatenateStudent(data):
     data['_name'] = getAccessibleElementByID(data['_name'])
+    data['_classroom'] = getClassroomByID(data['_classroom'])
 
     if data['_is_pass_pictogram']:
         items = PasswordPictogram.objects.filter(_id = data['_id'])
