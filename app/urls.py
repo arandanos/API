@@ -60,6 +60,7 @@ urlpatterns = [
     path('api/text_size', TextSizeView),
     path('api/student', StudentView),
     path('api/student/<_id>', StudentViewID),
+    path('api/student/classroom/<_id>', StudentViewClassroomID),
     path('api/password_pictogram', PasswordPictogramView),
     path('api/image/<_image>', ImageViewID)
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
