@@ -821,6 +821,9 @@ COPY public.api_accessibleelement (_id, _text, _pictogram, _alt) FROM stdin;
 25	Blanco y Negro	blancoynegro.png	Pictograma que identifica la tinta Blanco y Negro
 26	Plastificar	https://api.arasaac.org/api/pictograms/8672?resolution=500&download=false	Pictograma que identifica la tarea de Plastificar
 27	Antonio García	profe1.jpeg	Imagen que identifica al profesor Antonio García
+29	Cerdo	https://api.arasaac.org/api/pictograms/25622?resolution=500&download=false	Menu Con Cerdo
+31	Flan	https://api.arasaac.org/api/pictograms/3317?resolution=500&download=false	Imagen que identifica el postre Flan
+32	Goma	https://api.arasaac.org/api/pictograms/2409?resolution=500&download=false	Material: Goma
 \.
 
 
@@ -863,6 +866,8 @@ COPY public.api_dish (_id, _name_id, _type_id) FROM stdin;
 2	11	MENU
 3	12	POSTRE
 4	20	MENU
+11	29	MENU
+13	31	POSTRE
 \.
 
 
@@ -943,6 +948,7 @@ COPY public.api_material (_id, _quantity, _color_id, _type_id) FROM stdin;
 
 COPY public.api_materialtask (_id, _classroom_id, _task_id) FROM stdin;
 1	1	9
+7	1	20
 \.
 
 
@@ -953,6 +959,8 @@ COPY public.api_materialtask (_id, _classroom_id, _task_id) FROM stdin;
 COPY public.api_materialtaskdetail (_id, _quantity, _material_id, _material_task_id) FROM stdin;
 1	1	1	1
 2	1	4	1
+3	4	1	7
+4	2	4	7
 \.
 
 
@@ -964,7 +972,6 @@ COPY public.api_materialtype (_id, _name_id) FROM stdin;
 1	13
 2	18
 3	19
-4	18
 \.
 
 
@@ -1004,6 +1011,7 @@ COPY public.api_task (_id, _due_date, _type, _status, _auto_feedback, _feedback_
 9	2022-12-21	MATERIAL	f	f	\N	9	1	1
 10	2022-10-26	IMPRIMIR	f	f	\N	21	1	1
 11	2022-12-26	PLASTIFICAR	f	f	\N	26	1	1
+20	2022-12-21	MATERIAL	f	t	\N	9	1	1
 \.
 
 
@@ -1265,7 +1273,7 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 -- Name: api_accessibleelement__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_accessibleelement__id_seq', 26, true);
+SELECT pg_catalog.setval('public.api_accessibleelement__id_seq', 32, true);
 
 
 --
@@ -1286,7 +1294,7 @@ SELECT pg_catalog.setval('public.api_color__id_seq', 2, true);
 -- Name: api_dish__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_dish__id_seq', 10, true);
+SELECT pg_catalog.setval('public.api_dish__id_seq', 13, true);
 
 
 --
@@ -1321,21 +1329,21 @@ SELECT pg_catalog.setval('public.api_material__id_seq', 11, true);
 -- Name: api_materialtask__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtask__id_seq', 4, true);
+SELECT pg_catalog.setval('public.api_materialtask__id_seq', 8, true);
 
 
 --
 -- Name: api_materialtaskdetail__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtaskdetail__id_seq', 1, true);
+SELECT pg_catalog.setval('public.api_materialtaskdetail__id_seq', 5, true);
 
 
 --
 -- Name: api_materialtype__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtype__id_seq', 4, true);
+SELECT pg_catalog.setval('public.api_materialtype__id_seq', 5, true);
 
 
 --
@@ -1363,7 +1371,7 @@ SELECT pg_catalog.setval('public.api_student__id_seq', 1, true);
 -- Name: api_task__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_task__id_seq', 17, true);
+SELECT pg_catalog.setval('public.api_task__id_seq', 21, true);
 
 
 --
