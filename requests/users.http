@@ -1,0 +1,44 @@
+GET http://localhost:8000/api/student
+
+###
+
+POST http://localhost:8000/api/student
+
+{
+    "_password" : "123",
+    "_only_pictograms": "False",
+    "_caps": "True",
+    "_is_pass_pictogram": "False",
+    "_pass_in_order": "True",
+    "_classroom": "1",
+    "_text_size": "MEDIUM",
+    "_name": "2"
+}
+
+###
+
+GET http://localhost:8000/api/teacher
+
+###
+
+POST http://localhost:8000/api/teacher
+
+{
+    "_password" : "123",
+    "_username": "agarcia",
+    "_id_admin": "True",
+    "_name": "27"
+}
+
+###
+
+GET http://localhost:8000/api/teach
+
+###
+
+POST http://localhost:8000/api/teach
+
+{
+    "_classroom" : "1",
+    "_teacher": "1"
+}

@@ -271,16 +271,25 @@ def DishViewID(request, _id):
 # *****************************
 
 #· MÉTODOS AUXILIARES
+def concatenateClassroom(data):
+    data['_name'] = getAccessibleElementByID(data['_name'])
+    return data
+
 def getClassroomByID(_id):
     item = Classroom.objects.get(_id = _id)
     serializer = ClassroomSerializer(item)
-    return serializer.data
+    data = concatenateClassroom(serializer.data)
+    return data
 
 @csrf_exempt
 def ClassroomView(request):
     if request.method == 'GET':
         classrooms = Classroom.objects.all().order_by('_id')
         serializer = ClassroomSerializer(classrooms, many = True)
+
+        for classroom in serializer.data:
+            classroom = concatenateClassroom(classroom)
+
         return JsonResponse(serializer.data, safe = False)
     
     elif request.method == 'POST':
@@ -409,14 +418,16 @@ def TaskView(request):
         data = JSONParser().parse(request)
         serializer = TaskSerializer(data = data)
 
-        already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'])
+        # · Para comprobar si hay ya uno creado
+        # already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date']) 
                 
-        if not data['_feedback'] == None:
-            already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
+        # if '_feedback' in data: 
+        #     already_in_db = Task.objects.filter(_name = data['_name'], _due_date = data['_due_date'], _feedback = data['_feedback'])
 
-        if already_in_db:
-            serializer = TaskSerializer(already_in_db[0])
-        elif serializer.is_valid():
+        # if already_in_db:
+        #     serializer = TaskSerializer(already_in_db[0])
+        # elif
+        if serializer.is_valid():
             serializer.save()
         else:
             return JsonResponse(serializer.errors, status = 400)
@@ -439,36 +450,36 @@ def TaskViewID(request, _id):
     
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        item_serializer = TaskSerializer(item)
+        # item_serializer = TaskSerializer(item)
         
-        if not('_name' in data):
-            data['_name'] = item_serializer.data['_name']
+        # if not('_name' in data):
+        #     data['_name'] = item_serializer.data['_name']
             
-        if not('_feedback' in data):
-            data['_feedback'] = item_serializer.data['_feedback']
+        # if not('_feedback' in data):
+        #     data['_feedback'] = item_serializer.data['_feedback']
         
-        if not('_type' in data):
-            data['_type'] = item_serializer.data['_type']
+        # if not('_type' in data):
+        #     data['_type'] = item_serializer.data['_type']
 
-        if not('_due_date' in data):
-            data['_due_date'] = item_serializer.data['_due_date']
+        # if not('_due_date' in data):
+        #     data['_due_date'] = item_serializer.data['_due_date']
         
-        if not('_status' in data):
-            data['_status'] = item_serializer.data['_status']
+        # if not('_status' in data):
+        #     data['_status'] = item_serializer.data['_status']
             
-        if not('_auto_feedback' in data):
-            data['_auto_feedback'] = item_serializer.data['_auto_feedback']
+        # if not('_auto_feedback' in data):
+        #     data['_auto_feedback'] = item_serializer.data['_auto_feedback']
         
-        already_in_db = Task.objects.filter(_name = data['_name'], _feedback = data['_feedback'], _type = data['_type'], _due_date = data['_due_date'], _status = data['_status'], _auto_feedback = data['_auto_feedback'])
+        # already_in_db = Task.objects.filter(_name = data['_name'], _feedback = data['_feedback'], _type = data['_type'], _due_date = data['_due_date'], _status = data['_status'], _auto_feedback = data['_auto_feedback'])
  
-        if already_in_db:
-            serializer = TaskSerializer(already_in_db[0])
+        # if already_in_db:
+        #     serializer = TaskSerializer(already_in_db[0])
+        # else:
+        serializer = TaskSerializer(item, data = data)
+        if serializer.is_valid():
+            serializer.save()
         else:
-            serializer = TaskSerializer(item, data = data)
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                return HttpResponse(status = 400)
+            return HttpResponse(status = 400)
 
         data = concatenateTask(serializer.data)
         return JsonResponse(data, safe = False)

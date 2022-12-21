@@ -1,14 +1,15 @@
 # * http://localhost:8000/api/accesible_element
 
-GET http://localhost:8000/api/accessible_element
+GET http://0.0.0.0:8000/api/accessible_element
 
 ###
 
 POST http://localhost:8000/api/accessible_element
 
 {
-    "_text" : "Plastificar",
-    "_pictogram" : "https://api.arasaac.org/api/pictograms/8672?download=false"
+    "_text": "Antonio García",
+    "_pictogram": "https://api.arasaac.org/api/pictograms/8672?resolution=500&download=false",
+    "_alt": "Imagen que identifica al profesor Antonio García"
 }
 
 ### * http://localhost:8000/api/accesible_element/<_id>
@@ -17,10 +18,10 @@ GET http://localhost:8000/api/accessible_element/2
 
 ###
 
-PUT http://localhost:8000/api/accessible_element/23
+PUT http://localhost:8000/api/accessible_element/2
 
 {
-    "_text" : "Fruta",
+    "_id" : "Fruta",
     "_pictogram" : "https://api.arasaac.org/api/pictograms/4653?download=false"
 }
 
