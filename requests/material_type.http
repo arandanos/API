@@ -9,3 +9,6 @@ POST http://localhost:8000/api/material_type
 ###
 
 GET http://localhost:8000/api/material_type
+###
+
+DELETE http://localhost:8000/api/material_type/4

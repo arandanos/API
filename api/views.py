@@ -313,7 +313,7 @@ def ClassroomViewID(request, _id):
 
     if request.method == 'GET':
         serializer = ClassroomSerializer(item)
-        data = serializer.data
+        data = concatenateClassroom(serializer.data)
         return JsonResponse(data, safe = False)
     
     elif request.method == 'PUT':
