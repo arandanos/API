@@ -10,7 +10,7 @@ GET http://localhost:8000/api/material_type/4
 POST http://localhost:8000/api/material_type
 
 {
-    "_name" : "19"
+    "_name" : "27"
 }
 
 ### * TABLA MATERIAL
@@ -19,7 +19,7 @@ GET http://localhost:8000/api/material_task_detail/task/4
 
 ###
 
-GET http://localhost:8000/api/material/11
+DELETE http://localhost:8000/api/material_type/5
 
 ###
 

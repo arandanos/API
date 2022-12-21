@@ -3,9 +3,9 @@
 POST http://localhost:8000/api/material
 
 {
-    "_type": "5",
-    "_color": "17",
-    "_quantity": 10
+    "_type": "2",
+    "_color": "2",
+    "_quantity": 5
 }
 
 ###

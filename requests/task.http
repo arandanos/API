@@ -8,10 +8,12 @@ POST http://localhost:8000/api/task
 
 {
     "_name" : "26",
-    "_due_date": "2022-10-26",
-    "_type": "PLASTIFICADORA",
+    "_due_date": "2022-12-26",
+    "_type": "PLASTIFICAR",
     "_status": "False",
-    "_auto_feedback": "True"
+    "_auto_feedback": "False",
+    "_teacher": "1",
+    "_student": "1"
 }
 
 ### * http://localhost:8000/api/task/<_id>
@@ -20,14 +22,13 @@ GET http://localhost:8000/api/task/12
 
 ###
 
-PUT http://localhost:8000/api/task/1
+PUT http://localhost:8000/api/task/18
 
 {
-    "_name" : "16",
     "_due_date": "2015-03-25"
 }
 
 
 ###
 
-DELETE http://localhost:8000/api/task/11
+DELETE http://localhost:8000/api/task/4

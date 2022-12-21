@@ -5,8 +5,8 @@ GET http://localhost:8000/api/printer_laminator_task
 POST http://localhost:8000/api/printer_laminator_task
 
 {
-    "_classroom": "7",
-    "_task": "17"
+    "_classroom": "1",
+    "_task": "11"
 }
 
 ###
