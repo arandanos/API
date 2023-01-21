@@ -795,13 +795,13 @@ ALTER TABLE public.django_session OWNER TO admin;
 
 COPY public.api_accessibleelement (_id, _text, _pictogram, _alt) FROM stdin;
 2	María Rodriguez	alum1.jpeg	Imagen con la cara de la alumna María Rodriguez
-8	La Comida	https://api.arasaac.org/api/pictograms/4610?resolution=500&download=false	Pictograma que identifica la tarea de Comanda de Cocina
-9	Material	https://api.arasaac.org/api/pictograms/15838?resolution=500&download=false	Pictograma que identifica la tarea de Petición de Material
-10	Con Carne	https://api.arasaac.org/api/pictograms/6961?resolution=500&download=false	Pictograma que identifica el menú con carne
-11	Huevo	https://api.arasaac.org/api/pictograms/35917?resolution=500&download=false	Pictograma que identifica el menú con carne
 15	Azul Claro	https://api.arasaac.org/api/pictograms/3355?resolution=500&download=false	Pictograma que identifica el color Azul Claro
 14	Azul Oscuro	https://api.arasaac.org/api/pictograms/4869?resolution=500&download=false	Pictograma que identifica el color Azul Claro
+8	La Comida	comida.png	Pictograma que identifica la tarea de Comanda de Cocina
+9	Material	material.png	Pictograma que identifica la tarea de Petición de Material
 12	Fruta	https://api.arasaac.org/api/pictograms/4653?resolution=500&download=false	Pictograma que identifica el postre Fruta
+10	Con Carne	carne.png	Pictograma que identifica el menú con carne
+11	Huevo	huevo.png	Pictograma que identifica el menú con carne
 13	Cartulina	https://api.arasaac.org/api/pictograms/17208?resolution=500&download=false	Pictograma que identifica el material Cartulina
 16	Rojo	https://api.arasaac.org/api/pictograms/2808?resolution=500&download=false	Pictograma que identifica el color Rojo
 17	Verde	https://api.arasaac.org/api/pictograms/4887?resolution=500&download=false	Pictograma que identifica el color Verde
@@ -814,7 +814,6 @@ COPY public.api_accessibleelement (_id, _text, _pictogram, _alt) FROM stdin;
 18	Lápiz	https://api.arasaac.org/api/pictograms/2440?resolution=500&download=false	Pictograma que identifica el material Lápiz
 19	Sacapuntas	https://api.arasaac.org/api/pictograms/2553?resolution=500&download=false	Pictograma que identifica el material Sacapuntas
 20	Triturado	https://api.arasaac.org/api/pictograms/28157?resolution=500&download=false	Pictograma que identifica el menú triturado
-21	Imprimir	https://api.arasaac.org/api/pictograms/26138?resolution=500&download=false	Pictograma que identifica la tarea de Imprimir
 22	Blanco	https://api.arasaac.org/api/pictograms/2662?resolution=500&download=false	Pictograma que identifica el color Blanco
 23	Negro	https://api.arasaac.org/api/pictograms/2886?resolution=500&download=false	Pictograma que identifica el color Negro
 24	Color	https://api.arasaac.org/api/pictograms/5968?resolution=500&download=false	Pictograma que identifica la palabra Color
@@ -824,6 +823,9 @@ COPY public.api_accessibleelement (_id, _text, _pictogram, _alt) FROM stdin;
 29	Cerdo	https://api.arasaac.org/api/pictograms/25622?resolution=500&download=false	Menu Con Cerdo
 31	Flan	https://api.arasaac.org/api/pictograms/3317?resolution=500&download=false	Imagen que identifica el postre Flan
 32	Goma	https://api.arasaac.org/api/pictograms/2409?resolution=500&download=false	Material: Goma
+33	Con pollo	https://api.arasaac.org/api/pictograms/24815?resolution=500&download=false	Menu de pollo
+21	Imprimir	imprimir.png	Pictograma que identifica la tarea de Imprimir
+36	Goma	https://api.arasaac.org/api/pictograms/2409?resolution=500&download=false	Goma de Borrar
 \.
 
 
@@ -903,11 +905,9 @@ COPY public.api_kitchenorder (_id, _auto_calc, _task_id) FROM stdin;
 --
 
 COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _kitchen_order_id) FROM stdin;
-1	0	1	2	2
 2	0	6	2	2
 3	0	6	3	2
 4	0	6	4	2
-5	0	1	3	2
 6	0	1	1	2
 7	0	2	3	2
 8	0	2	1	2
@@ -927,6 +927,8 @@ COPY public.api_kitchenorderdetail (_id, _quantity, _classroom_id, _dish_id, _ki
 22	0	5	1	2
 23	0	5	4	2
 24	0	6	1	2
+1	3	1	2	2
+5	2	1	3	2
 \.
 
 
@@ -948,7 +950,6 @@ COPY public.api_material (_id, _quantity, _color_id, _type_id) FROM stdin;
 
 COPY public.api_materialtask (_id, _classroom_id, _task_id) FROM stdin;
 1	1	9
-7	1	20
 \.
 
 
@@ -959,8 +960,6 @@ COPY public.api_materialtask (_id, _classroom_id, _task_id) FROM stdin;
 COPY public.api_materialtaskdetail (_id, _quantity, _material_id, _material_task_id) FROM stdin;
 1	1	1	1
 2	1	4	1
-3	4	1	7
-4	2	4	7
 \.
 
 
@@ -972,6 +971,7 @@ COPY public.api_materialtype (_id, _name_id) FROM stdin;
 1	13
 2	18
 3	19
+7	36
 \.
 
 
@@ -1011,7 +1011,6 @@ COPY public.api_task (_id, _due_date, _type, _status, _auto_feedback, _feedback_
 9	2022-12-21	MATERIAL	f	f	\N	9	1	1
 10	2022-10-26	IMPRIMIR	f	f	\N	21	1	1
 11	2022-12-26	PLASTIFICAR	f	f	\N	26	1	1
-20	2022-12-21	MATERIAL	f	t	\N	9	1	1
 \.
 
 
@@ -1273,7 +1272,7 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 -- Name: api_accessibleelement__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_accessibleelement__id_seq', 32, true);
+SELECT pg_catalog.setval('public.api_accessibleelement__id_seq', 36, true);
 
 
 --
@@ -1294,7 +1293,7 @@ SELECT pg_catalog.setval('public.api_color__id_seq', 2, true);
 -- Name: api_dish__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_dish__id_seq', 13, true);
+SELECT pg_catalog.setval('public.api_dish__id_seq', 14, true);
 
 
 --
@@ -1329,21 +1328,21 @@ SELECT pg_catalog.setval('public.api_material__id_seq', 11, true);
 -- Name: api_materialtask__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtask__id_seq', 8, true);
+SELECT pg_catalog.setval('public.api_materialtask__id_seq', 9, true);
 
 
 --
 -- Name: api_materialtaskdetail__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtaskdetail__id_seq', 5, true);
+SELECT pg_catalog.setval('public.api_materialtaskdetail__id_seq', 6, true);
 
 
 --
 -- Name: api_materialtype__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_materialtype__id_seq', 5, true);
+SELECT pg_catalog.setval('public.api_materialtype__id_seq', 7, true);
 
 
 --
@@ -1371,7 +1370,7 @@ SELECT pg_catalog.setval('public.api_student__id_seq', 1, true);
 -- Name: api_task__id_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.api_task__id_seq', 21, true);
+SELECT pg_catalog.setval('public.api_task__id_seq', 22, true);
 
 
 --
